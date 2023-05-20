@@ -1,12 +1,17 @@
 /// 主题控制
 /// 因为各种各样的插件,不同的主题,所以需要统一控制,他们的主题
 /// 若您是UI大佬,欢迎来贡献主题~
+/// 说实话,关于UI,我不仅啥也不懂 而且没有精力去管理和配置主题样式
+/// 甚至是 Light和Dark 我只有精力去管理Dark主题
 import { ref ,Ref} from 'vue'
+
+
 
 export enum EnumTheme {
     // System,//跟随系统,还是不要它了,好麻烦的~
     Light,
     Dark,
+    Cofe,//只有当所有插件的主题都配置好 Cofe 后才可启用Cofe主题
 }
 
 type set_theme_f = (theme:EnumTheme)=>void;
@@ -31,7 +36,7 @@ export type enum_theme<V extends enum_theme_object<any> = {},S=any> = {
 // 这体操玩的...玩的 我糊里糊涂~🥴🥴🥴
 
 export let vant_theme_status=ref("dark");
-const vant_theme:enum_theme<{},string> = {
+const vant_theme:enum_theme<{Cofe:never},string> = {
     Light:"light",
     Dark:"dark",
     set_theme_f(theme:EnumTheme){
@@ -46,7 +51,7 @@ const vant_theme:enum_theme<{},string> = {
     }
 }
 
-const tailwind_theme:enum_theme<{},string> = {
+const tailwind_theme:enum_theme<{Cofe:never},string> = {
     Light:"light",
     Dark: "dark",
     set_theme_f(theme: EnumTheme): void {
@@ -62,16 +67,23 @@ const tailwind_theme:enum_theme<{},string> = {
 }
 
 
-
+//-------------------------------------------------------------
 /// 所有主题插件的配置常量,都应该放在这里处理
 const set_theme_arr =
     [   vant_theme,
         tailwind_theme,];
 
-
-
-/// todo 这个状态应该跟随 用户配置文件 ,现在还没有开发那个,所以暂时是EnumTheme.Dark
+// todo 这个状态应该跟随 用户配置文件 ,现在还没有开发那个,所以暂时是EnumTheme.Dark
 let theme_status = EnumTheme.Dark;
+
+// 主色状态
+// todo 未来扩展
+let main_color_status:never;
+// 字体状态
+// todo 未来扩展
+let font_status:never;
+//-------------------------------------------------------------
+
 
 
 /// 获取当前系统主题

@@ -20,6 +20,7 @@ use crate::tauri_install_everything;
 
 pub mod path;
 pub mod debug;
+pub mod data;
 pub mod config;
 
 tauri_install_everything!{

@@ -13,6 +13,8 @@
 //! ## Description  : 
 //! 一些简简单单的宏,就像我一样朴实无华~
 
+use std::error;
+
 
 
 /// 
@@ -55,4 +57,92 @@ macro_rules! tauri_install_everything {
         }
     };
 }
+
+
+
+/// 
+/// ## macro description : 
+/// 利用宏 实现 多重定义
+/// todo(0) : 实现 [枚举,元组,数组]
+/// todo(2) : 实现 all#[...] 模式 来直接让孩子实现 #[...] 而非一个一个定义  
+#[macro_export]
+macro_rules! multiple_definitions {
+    //正常的struct匹配
+    (
+        $( #[$meta:meta] )*
+        $vis:vis struct $name:ident {
+            $(
+                $( #[$field_meta:meta] )*
+                $field_vis:vis $field_name:ident : $field_ty:ty
+            ),*
+            $(,)? 
+        }
+    ) => {
+        $( #[$meta] )*
+        $vis struct $name {
+            $(
+                $( #[$field_meta] )*
+                $field_vis $field_name : $field_ty
+            ),*
+        }
+    };
+    //多重定义struct匹配
+    (
+        $( #[$meta:meta] )*
+        $vis:vis struct $name:ident {
+            $(
+                $( #[$field_meta:meta] )*
+                $field_vis:vis $field_name:ident 
+                    $(
+                        $( #[$child_meta:meta] )*
+                        $child_vis:vis struct $child_name:ident {
+                            $($tt:tt)*
+                        }
+                    )?
+                    $(:$field_ty:ty )?
+            ),*
+            $(,)? 
+        }
+    ) => {
+        $( #[$meta] )*
+        $vis struct $name {
+            $(
+                $( #[$field_meta] )*
+                $field_vis $field_name : $($child_name)? $($field_ty)?
+            ),*
+        }
+        $(
+            $(
+                multiple_definitions!(
+                    $( #[$child_meta] )*
+                    $child_vis struct $child_name{
+                        $($tt)*
+                    }
+                );
+            )? 
+        )*
+    };
+}
+
+
+multiple_definitions!(
+    #[allow(dead_code)]
+    #[derive(Clone)]
+    struct A {
+        a1: i32,
+        #[error("aaa")]
+        a2  #[allow(dead_code)]
+            #[derive(Clone)]
+            pub struct B{
+            b1:i128,
+            b2  #[derive(Clone)]
+                struct C{
+                    c:i128
+                },
+            b3:i32
+        },
+        a3: B,
+        
+    }
+);
 
