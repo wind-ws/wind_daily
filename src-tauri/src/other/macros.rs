@@ -13,8 +13,6 @@
 //! ## Description  : 
 //! 一些简简单单的宏,就像我一样朴实无华~
 
-use std::error;
-
 
 
 /// 
@@ -63,8 +61,9 @@ macro_rules! tauri_install_everything {
 /// 
 /// ## macro description : 
 /// 利用宏 实现 多重定义
-/// todo(0) : 实现 [枚举,元组,数组]
-/// todo(2) : 实现 all#[...] 模式 来直接让孩子实现 #[...] 而非一个一个定义  
+/// 事实上,它并不完美,甚至可以说非常差, 没办法,我玩宏的极限就在这里了,尝试了很久,只能止步于此了
+/// todo(0) : 实现 [枚举,元组,数组] //好麻烦懒得写, 有一种简单的写法,就是用tt撕咬机,直接整,但是需要用分隔符{},这会导致这样 a:{int},很丑,对吧
+/// todo(2) : 实现 all#[...] 模式 来直接让孩子实现 #[...] 而非一个一个定义  //不会写... 没法传递...
 #[macro_export]
 macro_rules! multiple_definitions {
     //正常的struct匹配
@@ -130,7 +129,7 @@ multiple_definitions!(
     #[derive(Clone)]
     struct A {
         a1: i32,
-        #[error("aaa")]
+        // #[error("aaa")]
         a2  #[allow(dead_code)]
             #[derive(Clone)]
             pub struct B{
@@ -145,4 +144,7 @@ multiple_definitions!(
         
     }
 );
+
+
+
 

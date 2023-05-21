@@ -13,6 +13,3 @@
 //! ## Description  : 
 //! App的数据管理
 
-struct A{
-    a:i128
-}
