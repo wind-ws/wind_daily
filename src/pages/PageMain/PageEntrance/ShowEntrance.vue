@@ -2,6 +2,7 @@
     import {EllipsisVerticalIcon, PlayIcon} from "@heroicons/vue/24/outline"
     import {Popup} from 'vant';
     import {ref} from "vue";
+    import {is_path_access} from "../../../ts_src/twin/debug/path_access";
 
     const show_popup = ref(false);
 
@@ -33,7 +34,8 @@
          style = "margin: auto">
       <div class = "h-full w-[73%] text-center
                   border-solid border-4 rounded-l-lg border-teal-600"
-           style = "float: left;line-height:55px ">
+           style = "float: left;line-height:55px "
+           @click="is_path_access()">
         <PlayIcon class = "w-10 text-teal-500 inline"></PlayIcon>
 
       </div>

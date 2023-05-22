@@ -13,3 +13,8 @@
 
 > User 表示 用户本身 , 一个App中用户可以存在多个
 > > 例如 UserData,UserConfig 表示一个用户独有的
+
+> 若一个结构服务 json ,那么命名结尾必须是Json
+
+> 若一个结构是json文件的根,即用这个结构直接对应的json文件,那么命名结尾RJson
+

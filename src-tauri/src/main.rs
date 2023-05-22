@@ -2,7 +2,6 @@
 
 
 
-
 fn main() {
     #[cfg(desktop)]
     wind_daily_lib::run();

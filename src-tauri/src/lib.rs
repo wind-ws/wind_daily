@@ -1,3 +1,5 @@
+#![allow(dead_code)]//太吵了,全局用用
+
 use tauri::{Builder, Wry};
 
 pub mod twin;

@@ -25,4 +25,5 @@ pub mod debug;
 
 tauri_install_everything!{
     |path
+    |debug
 }

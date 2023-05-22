@@ -66,9 +66,9 @@ pub enum BaseDirectory {
     Video,
     Resource,
     AppConfig,
-    AppData,
+    AppData,//可能会统一用这个玩意
     AppLocalData,
-    AppCache,
+    AppCache, //应用缓存文件的建议目录路径
     AppLog
 }
 
