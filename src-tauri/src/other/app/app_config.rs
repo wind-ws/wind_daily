@@ -14,15 +14,19 @@
 //! App的配置管理
 
 
-use std::fs::File;
+use std::{fs::File, io::Write};
+
+use serde::{Serialize, Deserialize};
 
 use crate::other::{chaos::file_name::{FileName, FilePath}, path::app_path::AppPath, init::init_file::InitFile};
 
 pub mod app_user_list;
 
 /// App配置文件的根
+#[derive(Debug,Clone,Default,Serialize, Deserialize)]
+#[serde(default)] 
 pub struct AppConfigRJson {
-    app_user_list: app_user_list::AppUserListJson,
+    app_user_list: self::app_user_list::AppUserListJson,
 }
 
 impl FileName for AppConfigRJson {
@@ -38,11 +42,14 @@ impl FilePath for AppConfigRJson {
 impl InitFile for AppConfigRJson {
     fn init_file() {
         match File::open(AppConfigRJson::get_file_position()) {
-            Ok(v) => {
-                //todo写入json
+            Ok(_) => {
+                // 我认为 文件读取不应该出现在这里...虽然很方便
             },
             Err(e) =>{
-                //todo创建文件
+                // ! e 没有被精准处理,感觉没必要
+                let mut file=File::create(AppConfigRJson::get_file_position()).unwrap();
+                let json = serde_json::to_string(&AppConfigRJson::default()).unwrap();
+                file.write_all(json.as_bytes()).unwrap();
             },
         }
     }

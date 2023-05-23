@@ -21,6 +21,7 @@ use serde::{Deserialize, Serialize};
 
 /// App 存储 用户列表
 #[derive(Debug,Clone,Default,Serialize, Deserialize)]
+#[serde(default)] 
 pub struct AppUserListJson{
     user_count:i32,
     user_list:HashMap<UserNameJson,UserFolderPathJson>

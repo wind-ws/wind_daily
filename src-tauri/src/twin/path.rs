@@ -107,7 +107,7 @@ impl BaseDirectory {
 
 static mut ALL_BASE_PATH:Option<AppAllBasePath> = None;
 
-
+// todo 改成 init 调用 command
 pub fn event_listening_event_modify_path(app:&mut App)->Result<(), Box<dyn std::error::Error>>{
     let mut id: tauri::EventHandler;
     id= app.listen_global("event_modify_path",

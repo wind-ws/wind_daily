@@ -20,10 +20,10 @@ use std::path::{PathBuf};
 /// 获取文件名
 pub trait FileName {
     fn get_file_name() -> &'static str;
-
 }
+
 /// 获取文件路径
-/// 如果一个文件根结构被实现它,那么这个文件理应只属于这个地方,而非 还可以在其他地方创建它
+/// 如果一个文件根结构被实现它,那么这个文件理应 只 属于这个路径下,而非 还可以在其他路径下 创建它
 pub trait FilePath : FileName{
     fn get_file_path()->PathBuf;
     fn get_file_position()->PathBuf{

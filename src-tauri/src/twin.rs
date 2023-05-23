@@ -22,8 +22,12 @@ use crate::tauri_install_everything;
 
 pub mod path;
 pub mod debug;
+pub mod app;
+pub mod user;
+pub mod init;
 
 tauri_install_everything!{
     |path
     |debug
+    |init
 }

@@ -14,5 +14,5 @@
 //! 还不知道咋分类的 一些东西
 //! 或者说 不知道放在那个地方好
 
-pub mod struct_change_control;
+pub mod version_migration;
 pub mod file_name;

@@ -16,8 +16,12 @@
 //! 
 
 pub mod macros;
+
+pub mod chaos;
+
 pub mod app;
 pub mod user;
-pub mod chaos;
+
 pub mod path;
+
 pub mod init;

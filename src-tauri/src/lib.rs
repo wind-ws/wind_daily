@@ -1,9 +1,11 @@
 #![allow(dead_code)]//太吵了,全局用用
-
 use tauri::{Builder, Wry};
 
+#[macro_use]
+extern crate lazy_static;
 pub mod twin;
 pub mod other;
+pub mod test;
 
 
 

@@ -58,93 +58,99 @@ macro_rules! tauri_install_everything {
 
 
 
-/// 
-/// ## macro description : 
-/// 利用宏 实现 多重定义
-/// 事实上,它并不完美,甚至可以说非常差, 没办法,我玩宏的极限就在这里了,尝试了很久,只能止步于此了
-/// todo(1) : 实现 [枚举,元组,数组] //好麻烦懒得写, 有一种简单的写法,就是用tt撕咬机,直接整,但是需要用分隔符{},这会导致这样 a:{int},很丑,对吧
-/// todo(0) : 实现 all#[...] 模式 来直接让孩子实现 #[...] 而非一个一个定义  //不会写... 没法传递...
-/// todo(1) : 实现 HashMap<struct{...},struct{...}> ,类似这样的全部
-// #[macro_export]
-macro_rules! multiple_definitions {
-    //正常的struct匹配
-    (
-        $( #[$meta:meta] )*
-        $vis:vis struct $name:ident {
+
+/// 孵化中的宏 ,禁止使用
+mod hatching {
+    /// 
+    /// ## macro description : 
+    /// 利用宏 实现 多重定义
+    /// 事实上,它并不完美,甚至可以说非常差, 没办法,我玩宏的极限就在这里了,尝试了很久,只能止步于此了
+    /// todo(1) : 实现 [枚举,元组,数组] //好麻烦懒得写, 有一种简单的写法,就是用tt撕咬机,直接整,但是需要用分隔符{},这会导致这样 a:{int},很丑,对吧
+    /// todo(0) : 实现 all#[...] 模式 来直接让孩子实现 #[...] 而非一个一个定义  //不会写... 没法传递...
+    /// todo(1) : 实现 HashMap<struct{...},struct{...}> ,类似这样的全部
+    // #[macro_export]
+    macro_rules! multiple_definitions {
+        //正常的struct匹配
+        (
+            $( #[$meta:meta] )*
+            $vis:vis struct $name:ident {
+                $(
+                    $( #[$field_meta:meta] )*
+                    $field_vis:vis $field_name:ident : $field_ty:ty
+                ),*
+                $(,)? 
+            }
+        ) => {
+            $( #[$meta] )*
+            $vis struct $name {
+                $(
+                    $( #[$field_meta] )*
+                    $field_vis $field_name : $field_ty
+                ),*
+            }
+        };
+        //多重定义struct匹配
+        (
+            $( #[$meta:meta] )*
+            $vis:vis struct $name:ident {
+                $(
+                    $( #[$field_meta:meta] )*
+                    $field_vis:vis $field_name:ident 
+                        $(
+                            $( #[$child_meta:meta] )*
+                            $child_vis:vis struct $child_name:ident {
+                                $($tt:tt)*
+                            }
+                        )?
+                        $(:$field_ty:ty )?
+                ),*
+                $(,)? 
+            }
+        ) => {
+            $( #[$meta] )*
+            $vis struct $name {
+                $(
+                    $( #[$field_meta] )*
+                    $field_vis $field_name : $($child_name)? $($field_ty)?
+                ),*
+            }
             $(
-                $( #[$field_meta:meta] )*
-                $field_vis:vis $field_name:ident : $field_ty:ty
-            ),*
-            $(,)? 
-        }
-    ) => {
-        $( #[$meta] )*
-        $vis struct $name {
-            $(
-                $( #[$field_meta] )*
-                $field_vis $field_name : $field_ty
-            ),*
-        }
-    };
-    //多重定义struct匹配
-    (
-        $( #[$meta:meta] )*
-        $vis:vis struct $name:ident {
-            $(
-                $( #[$field_meta:meta] )*
-                $field_vis:vis $field_name:ident 
-                    $(
-                        $( #[$child_meta:meta] )*
-                        $child_vis:vis struct $child_name:ident {
-                            $($tt:tt)*
+                $(
+                    multiple_definitions!(
+                        $( #[$child_meta] )*
+                        $child_vis struct $child_name{
+                            $($tt)*
                         }
-                    )?
-                    $(:$field_ty:ty )?
-            ),*
-            $(,)? 
+                    );
+                )? 
+            )*
+        };
+    }
+
+
+    multiple_definitions!(
+        #[allow(dead_code)]
+        #[derive(Clone)]
+        struct A {
+            a1: i32,
+            // #[error("aaa")]
+            a2  #[allow(dead_code)]
+                #[derive(Clone)]
+                pub struct B{
+                b1:i128,
+                b2  #[derive(Clone)]
+                    struct C{
+                        c:i128
+                    },
+                b3:i32
+            },
+            a3: B,
+            
         }
-    ) => {
-        $( #[$meta] )*
-        $vis struct $name {
-            $(
-                $( #[$field_meta] )*
-                $field_vis $field_name : $($child_name)? $($field_ty)?
-            ),*
-        }
-        $(
-            $(
-                multiple_definitions!(
-                    $( #[$child_meta] )*
-                    $child_vis struct $child_name{
-                        $($tt)*
-                    }
-                );
-            )? 
-        )*
-    };
+    );
+
 }
 
-
-multiple_definitions!(
-    #[allow(dead_code)]
-    #[derive(Clone)]
-    struct A {
-        a1: i32,
-        // #[error("aaa")]
-        a2  #[allow(dead_code)]
-            #[derive(Clone)]
-            pub struct B{
-            b1:i128,
-            b2  #[derive(Clone)]
-                struct C{
-                    c:i128
-                },
-            b3:i32
-        },
-        a3: B,
-        
-    }
-);
 
 
 

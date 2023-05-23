@@ -17,5 +17,7 @@ pub mod init_file;
 
 
 
-
+pub fn init(){
+    init_file::init();
+}
 
