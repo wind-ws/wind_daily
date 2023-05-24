@@ -13,7 +13,7 @@
 //! ## Description  : 
 //! 检查Path是否可以成进入
 
-use std::{fs::File, path::{Path, PathBuf}};
+use std::{fs::File, path::{PathBuf}};
 
 use crate::{tauri_install_everything, twin::path::BaseDirectory};
 
