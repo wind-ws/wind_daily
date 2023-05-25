@@ -20,8 +20,9 @@
 // todo 1. 自动更新数据类型,包括 结构版本迭代
 // todo 2. 自动存取
 
-use std::{ fmt::Debug, fs::File, io::Read};
+use std::{ fmt::Debug, fs::{File, self}, io::{Read, Write},ops::{Deref,DerefMut}, path::{Path, PathBuf}};
 use serde::{Serialize, Deserialize, de::DeserializeOwned};
+use serde_json::json;
 use super::file_name::FilePath;
 
 // 术语统一
@@ -34,32 +35,103 @@ use super::file_name::FilePath;
 /// 迭代需要 D 实现 Mig 来达到 
 #[derive(Debug,Default,Clone,Serialize,Deserialize)]
 pub struct RJson<D> 
-    where D : Debug+Default+Clone+FilePath +Sized{
+    where D : Debug+Default+Clone+FilePath +Sized{//其实 D 要被 Mig 约束,但是不知道为什么 Deserialize 总是报错无法编译
+    
     // 当前的版本 , 以防应用长期不更新,出现 中间版本 ,从0开始,若是1则从0迁移到1,若是n则从0->1->...->n-1->n
     // 若 存储版本号 和 最新版本号不一致 则需要做出更新
     version:usize,
+    
     data:D,//D类型是最新版本类型
+    
+    // #[serde(skip)]
+    // file:File
+    //需要反反复复 打开关闭 文件, 需不需要加一个file字段,来让它一直保存在内存中
 }
 
+impl<D> Deref for RJson<D>
+    where D : Mig{
+    type Target=D;
+    fn deref(&self) -> &Self::Target {
+        &self.data
+    }
+}
+impl<D> DerefMut for RJson<D>
+    where D : Mig{
+    
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.data
+    }
+}
 
 impl<D> RJson<D> 
-    where D : Debug+Default+Clone+Mig{
+    where D : Mig{
     
-    fn updata(&mut self){
+    /// 想要D具有迁移能力,只需要D实现Mig和它的老版本也实现Mig
+    /// 这个函数在 初始化 创建结构体的 时候运行一次就可以了
+    pub fn updata()->Self{
         let json = D::_updata(0);// 直到0为止,或搜索到now_version
-        self.data = json;
-        self.version = D::get_version();
+        let json = Self{
+            version:D::get_version(),
+            data:json,
+        };
+        Self::_updata_file(&json);
+        json
     }
     
+    /// 返回一个自动 存储的 Json
+    pub fn auto<'d>(&'d self)->AutoRJson<'d,D>{//为了清晰点,显性标记'd
+        
+        todo!()
+    }
+
+    /// 不存在 则 创建文件,并且传入数据
+    /// 存在 则 更新数据
+    fn _updata_file(data:&RJson<D>){
+        match File::open(D::get_file_position()) {
+            Ok(mut file) => {//文件目录未变更,只是 数据结构变更,则会运行下面的代码
+                let json = serde_json::to_string(data).unwrap();
+                file.write_all(json.as_bytes()).unwrap();
+            },
+            Err(e) =>{
+                match e.kind() {
+                    std::io::ErrorKind::NotFound => {
+                        let mut file=File::create(D::get_file_position()).unwrap();
+                        let json = serde_json::to_string(data).unwrap();
+                        file.write_all(json.as_bytes()).unwrap();    
+                    },
+                    _=>panic!("不应该出现其他错误")
+                }
+            },
+        }
+    }
+
 }
 
+pub struct AutoRJson<'d,D:Mig>{
+    data:&'d mut D
+}
+impl<'d,D:Mig> Drop for AutoRJson<'d,D>{
+    fn drop(&mut self) {
+        let mut file = File::open(D::get_file_position()).unwrap();
+        let json = json!({
+            "version":D::get_version(),
+            "data":*self.data,//json宏会自动加个&, 即它现在是 &(*self.data) 类型是 &D
+        }).to_string();
+        file.write_all(json.as_bytes()).unwrap();
+    }
+}
+
+
+
+
+/// 迁移 特征
 pub trait Mig 
-    where Self: FilePath+Debug+Default+Clone+Sized+DeserializeOwned{
+    where Self: FilePath+Debug+Default+Clone+Sized+DeserializeOwned+Serialize{
     /// 获取当前类型的 版本
     fn get_version()->usize;
 
-    ///
-    /// 苦思冥想,想出一个离谱的更新方法  
+    /// 你不应该手动调用这个函数,它理应被包装好, 除了它被下一个版本的_old_version函数调用
+    /// 注意的是, 这个函数是处理 数据迭代更新, 要保证数据文件的存在 
     /// 你需要这样写这个函数  
     /// ```
     /// 
@@ -87,25 +159,43 @@ pub trait Mig
             }
         }
         if now_version == Self::get_version() {//存储版本 与 类型版本 一致,停止向老版本传递,开始向新版本更新
-            let mut file = File::open(Self::get_file_position()).unwrap();//版本一致必然获取
-            let mut s = String::new();
-            file.read_to_string(&mut s).unwrap();
-            let json:RJson<Self> = serde_json::from_str::<RJson<Self>>(&s).unwrap();
-            json.data
-        }else {
-            Self::_old_version(now_version)
+            match File::open(Self::get_file_position()) {
+                Ok(file) => { //版本一致必然获取, 除非 软件第一次被使用,压根没有任何数据(旧数据新数据都没有)
+                    let mut s = String::new();
+                    file.read_to_string(&mut s).unwrap();
+                    let json:RJson<Self> = serde_json::from_str::<RJson<Self>>(&s).unwrap();
+                    json.data
+                },
+                Err(_) => {//能运行到这里 就说明 : now_version==0 并且 这是软件第一次启动,压根没有一点点数据
+                    Self::default()
+                },
+            }
+        
+        }else {// 向老版本传递, 并且检查老版本的路径变更,若变化则删除老版本文件 , 第一版永远都不应该运行到这里
+            let (json,old_path)=Self::_old_version(now_version);
+            Self::_delete_file(&old_path);
+            json
         }
     }
     
+    /// 你不应该手动调用这个函数,它理应被包装好
     /// 声明 上一个版本
+    /// 0版本,也就是第一版,不用实现它,毕竟它是最老的版本
     /// 并且 处理 上一个版本 迁移 到 这个版本
     /// ```
     /// let old=Old::_updata(now_version);
     /// ...;// 迁移
-    /// return now;//返回 迁移后的版本
+    /// return (self_json,Old::get_file_position());//返回 迁移后的版本
     /// ```
-    fn _old_version(now_version:usize)->Self;
+    fn _old_version(now_version:usize)->(Self,PathBuf);
     
+    /// 你不应该手动调用这个函数,它理应被包装好
+    /// 若老版本 文件路径 不等于 当前版本文件路径 ,则删除老版本文件
+    fn _delete_file(old_path:&Path){
+        if old_path != Self::get_file_position(){
+            fs::remove_file(old_path);
+        }
+    }
 
 }
 
@@ -121,6 +211,39 @@ mod example {
     use crate::other::chaos::file_name::FileName;
 
     use super::*;
+
+    /// 这才是你 需要用的类型
+    /// D 永远是你的最新版本
+    type MyJson = RJson<New>;
+
+
+
+    #[derive(Debug,Default,Clone,Serialize, Deserialize)]
+    struct New(String);
+    impl FileName for New {
+        fn get_file_name() -> &'static str {
+            "new.json"
+        }
+    }
+    impl FilePath for New  {
+        fn get_file_path()->std::path::PathBuf {
+            Into::<PathBuf>::into("/new")
+        }
+    }
+    impl Mig for New {
+        fn get_version()->usize {
+            1
+        }
+
+        fn _old_version(now_version:usize)->(Self, PathBuf) {
+            let old = Old::_updata(now_version);
+            let mut now = Self::default();
+            now.0 = old.0.to_string();
+            (now,Old::get_file_position())
+        }
+
+    
+    }
 
     #[derive(Debug,Default,Clone,Serialize, Deserialize)]
     struct Old(i32);
@@ -139,53 +262,25 @@ mod example {
             0
         }
 
-        fn _updata(now_version:usize)->Self {
-            //这是第一版,不用关心 now_version
-            //能运行到这里,就说明, 存储类型还是 第一版的类型
-            let mut file = File::open(Self::get_file_position()).unwrap();
-            let mut s = String::new();
-            file.read_to_string(&mut s).unwrap();
-            let json:Self = serde_json::from_str(&s).unwrap();
-            json
-        }
-
-        fn _old_version(now_version:usize)->Self {
-            todo!()//没有上个版本,不用写
+        fn _old_version(now_version:usize)->(Self, PathBuf) {
+            todo!("我是第一版,我不应该被运行")
         }
     }
     
-    #[derive(Debug,Default,Clone,Serialize, Deserialize)]
-    struct New(String);
-    impl FileName for New {
-        fn get_file_name() -> &'static str {
-            "new.json"
-        }
-    }
-    impl FilePath for New  {
-        fn get_file_path()->std::path::PathBuf {
-            Into::<PathBuf>::into("/new")
-        }
-    }
-    impl Mig for New {
-        fn get_version()->usize {
-            1
-        }
-
-        fn _old_version(now_version:usize)->Self {
-            let old = Old::_updata(now_version);
-            let mut now = Self::default();
-            now.0 = old.0.to_string();
-            now
-        }
-
     
-    }
-
     
 }
 
 
-
+/*
+    用户存在数据,并且都是最新的
+        无事可做
+    用户第一次使用这个软件,没有数据
+        那么就需要初始化不存在的文件,每次启动都这样
+    用户存在数据,但存在旧数据结构
+        更新数据结构,并且删除旧数据结构
+        
+ */
 
 
 

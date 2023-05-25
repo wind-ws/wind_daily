@@ -27,7 +27,7 @@ pub trait InitPath  {
 
 /// 我认为 每一个 文件都应该被管理, 就算只是一个小文件
 /// 所以 每一个文件 都应该被一个结构代理, 而实现 InitFile 这个trait,来达到初始化
-pub trait InitFile {
+pub trait InitFile {//todo wait delete
     fn init_file();
 }
 
@@ -46,9 +46,8 @@ fn init_path(){
     vec.into_iter().for_each(|v|v());
 }
 
-fn init_file(){
+fn init_file(){// todo wait delete
     let vec:Vec<fn ()> = vec![
-        AppConfigRJson::init_file
     ];
 
     vec.into_iter().for_each(|v|v());
