@@ -18,7 +18,7 @@
 
 use std::{path::{PathBuf}, fs};
 
-use crate::{ other::init::init_file::InitPath};
+use crate::{ other::init::init_path::InitPath};
 
 use super::core_path::CorePath;
 
@@ -29,6 +29,7 @@ pub enum AppPath {
     App,
     AppData,
     AppConfig,
+    Test,//测试用的路径
 }
 
 impl AppPath {
@@ -38,27 +39,20 @@ impl AppPath {
             AppPath::App => CorePath::Now.get_path().join("app"),
             AppPath::AppData => CorePath::Now.get_path().join("app/app_data"),
             AppPath::AppConfig => CorePath::Now.get_path().join("app/app_config"),
+            AppPath::Test => CorePath::Now.get_path().join("test"),
         }
     }
 }
 impl InitPath for AppPath {
-    fn init_path() {
-        let vec_path = vec![
-            AppPath::DefaultUser,
-            AppPath::App,
-            AppPath::AppData,
-            AppPath::AppConfig,
-        ];
-        vec_path.into_iter().for_each(
-            |v| {
-                if let Err(e) = fs::create_dir(v.get_path()){
-                    match e.kind(){
-                        std::io::ErrorKind::AlreadyExists =>(),
-                        _=> panic!("除了路径以存在,不应该出现其他错误")
-                    }
-                }
-            }
-        );
+    
+    fn get_vec_paths()->Vec<PathBuf> {
+        vec![
+            AppPath::DefaultUser.get_path(),
+            AppPath::App.get_path(),
+            AppPath::AppData.get_path(),
+            AppPath::AppConfig.get_path(),
+            AppPath::Test.get_path()
+        ]
     }
 }
 

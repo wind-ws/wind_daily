@@ -74,6 +74,7 @@ impl<D> RJson<D>
             version:D::get_version(),
             data:json,
         };
+        println!("{json:?}");
         Self::_updata_file(&json);
         json
     }
@@ -87,20 +88,13 @@ impl<D> RJson<D>
     /// 不存在 则 创建文件,并且传入数据
     /// 存在 则 更新数据
     fn _updata_file(data:&RJson<D>){
-        match File::open(D::get_file_position()) {
+        match File::create(D::get_file_position()) {//文件不存在,则创建文件+写入数据,存在则,写入数据
             Ok(mut file) => {//文件目录未变更,只是 数据结构变更,则会运行下面的代码
                 let json = serde_json::to_string(data).unwrap();
                 file.write_all(json.as_bytes()).unwrap();
             },
-            Err(e) =>{
-                match e.kind() {
-                    std::io::ErrorKind::NotFound => {
-                        let mut file=File::create(D::get_file_position()).unwrap();
-                        let json = serde_json::to_string(data).unwrap();
-                        file.write_all(json.as_bytes()).unwrap();    
-                    },
-                    _=>panic!("不应该出现其他错误")
-                }
+            Err(_) =>{
+                panic!("不应该出现其他错误")
             },
         }
     }
@@ -160,7 +154,7 @@ pub trait Mig
         }
         if now_version == Self::get_version() {//存储版本 与 类型版本 一致,停止向老版本传递,开始向新版本更新
             match File::open(Self::get_file_position()) {
-                Ok(file) => { //版本一致必然获取, 除非 软件第一次被使用,压根没有任何数据(旧数据新数据都没有)
+                Ok(mut file) => { //版本一致必然获取, 除非 软件第一次被使用,压根没有任何数据(旧数据新数据都没有)
                     let mut s = String::new();
                     file.read_to_string(&mut s).unwrap();
                     let json:RJson<Self> = serde_json::from_str::<RJson<Self>>(&s).unwrap();
@@ -203,23 +197,58 @@ pub trait Mig
 
 
 
-/// 以下 完完全全 为模拟, 并非真实的路径和文件,并且不可运行
-mod example {
+/// 以下 是可运行的
+pub mod example {
     
     use std::{path::PathBuf, io::Read};
 
-    use crate::other::chaos::file_name::FileName;
+    use crate::other::{chaos::file_name::FileName, path::app_path::AppPath};
 
     use super::*;
 
+    lazy_static!{
+        pub static ref MY_JSON:MyJson = {
+            MyJson::updata()
+        };
+    }
+
+
     /// 这才是你 需要用的类型
-    /// D 永远是你的最新版本
-    type MyJson = RJson<New>;
-
-
+    /// D 永远是你的最新版本 
+    /// 你只需要切换D类型,就可以决定当前使用的版本
+    pub type MyJson = RJson<NewPlus>;
 
     #[derive(Debug,Default,Clone,Serialize, Deserialize)]
-    struct New(String);
+    pub struct NewPlus{//它只变更了数据结构
+        i:i32,
+        s:String,
+    }
+    impl FileName for NewPlus {
+        fn get_file_name() -> &'static str {
+            "new.json"
+        }
+    }
+    impl FilePath for NewPlus  {
+        fn get_file_path()->std::path::PathBuf {
+            AppPath::Test.get_path()
+        }
+    }
+    impl Mig for NewPlus {
+        fn get_version()->usize {
+            2
+        }
+
+        fn _old_version(now_version:usize)->(Self,PathBuf) {
+            let old = New::_updata(now_version);
+            (Self{
+                i:666,
+                s:old.0
+            },New::get_file_position())
+        }
+    }
+
+    #[derive(Debug,Default,Clone,Serialize, Deserialize)]
+    pub struct New(String);//它在老版本上更新了路径
     impl FileName for New {
         fn get_file_name() -> &'static str {
             "new.json"
@@ -227,7 +256,7 @@ mod example {
     }
     impl FilePath for New  {
         fn get_file_path()->std::path::PathBuf {
-            Into::<PathBuf>::into("/new")
+            AppPath::Test.get_path()
         }
     }
     impl Mig for New {
@@ -238,7 +267,7 @@ mod example {
         fn _old_version(now_version:usize)->(Self, PathBuf) {
             let old = Old::_updata(now_version);
             let mut now = Self::default();
-            now.0 = old.0.to_string();
+            now.0 = format!("New:{}",old.0.to_string());
             (now,Old::get_file_position())
         }
 
@@ -246,7 +275,7 @@ mod example {
     }
 
     #[derive(Debug,Default,Clone,Serialize, Deserialize)]
-    struct Old(i32);
+    pub struct Old(i32);
     impl FileName for Old {
         fn get_file_name() -> &'static str {
             "old.json"
@@ -254,7 +283,7 @@ mod example {
     }
     impl FilePath for Old  {
         fn get_file_path()->std::path::PathBuf {
-            Into::<PathBuf>::into("/old")
+            AppPath::Test.get_path()
         }
     }
     impl Mig for Old {

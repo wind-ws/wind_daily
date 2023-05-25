@@ -13,11 +13,14 @@
 //! ## Description  : 
 //! 初始化模块
 
-pub mod init_file;
+use crate::other::chaos::version_migration::example::{MY_JSON};
+
+pub mod init_path;
 
 
 
 pub fn init(){
-    init_file::init();
+    init_path::init_path();
+    println!("{:?}",*MY_JSON);
 }
 

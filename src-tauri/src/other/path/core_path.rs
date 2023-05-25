@@ -15,7 +15,7 @@
 
 use std::path::PathBuf;
 
-use crate::twin::path::BaseDirectory;
+use crate::{twin::path::BaseDirectory, other::init::init_path::InitPath};
 
 
 pub enum CorePath {
@@ -29,6 +29,13 @@ impl CorePath {
             CorePath::Now => BaseDirectory::AppData.get_base_path().to_path_buf()
                 .join(Into::<&str>::into(VersionPath::_0_0_0)),
         }
+    }
+}
+impl InitPath for CorePath {
+    fn get_vec_paths()->Vec<PathBuf> {
+        vec![
+            CorePath::Now.get_path()
+        ]
     }
 }
 

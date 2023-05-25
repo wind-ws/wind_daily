@@ -1,5 +1,5 @@
-import { emit } from '@tauri-apps/api/event'
 import * as appDir from '@tauri-apps/api/path';
+import { invoke } from '@tauri-apps/api/tauri'
 
 
 /// 注意,在Android中以下有部分Dir是无法获取的,并且一但尝试获取会导致白屏... (这个bug,真离谱,真不好找,🌿!)
@@ -37,7 +37,7 @@ export const videoDirPath = await appDir.videoDir();
  */
 
 
-export function path_send_rust() {
+export function init_rust_path() {
     const app_all_base_path = {
         app_cache_dir_path      : appCacheDirPath,
         app_config_dir_path     : appConfigDirPath,
@@ -62,7 +62,10 @@ export function path_send_rust() {
         // template_dir_path       : templateDirPath,
         video_dir_path          : videoDirPath,
     }
-    emit('event_modify_path', app_all_base_path)
+   
+    invoke('init_rust_path', {json:app_all_base_path})
+        .then((message) => console.log(message))
+        .catch((error) => console.error(error))
 }
 
 

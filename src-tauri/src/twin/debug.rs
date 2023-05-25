@@ -22,6 +22,3 @@ use crate::tauri_install_everything;
 pub mod path_access;
 
 
-tauri_install_everything!{
-    |path_access
-}

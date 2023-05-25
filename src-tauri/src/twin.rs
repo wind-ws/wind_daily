@@ -18,7 +18,6 @@
 //! 
 //! Rust这边twin目录下,应该只提供 交互的接口 , 而不应该写功能和结构 
 
-use crate::tauri_install_everything;
 
 pub mod path;
 pub mod debug;
@@ -26,8 +25,3 @@ pub mod app;
 pub mod user;
 pub mod init;
 
-tauri_install_everything!{
-    |path
-    |debug
-    |init
-}

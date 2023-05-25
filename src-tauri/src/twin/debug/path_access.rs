@@ -31,8 +31,3 @@ fn is_path_access() -> Result<(), String>{
     Ok(())
 }
 
-
-tauri_install_everything!{
-    let ta;
-    ta.invoke_handler(tauri::generate_handler![is_path_access])
-}

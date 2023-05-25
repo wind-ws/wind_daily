@@ -14,11 +14,11 @@
 //! App的配置管理
 
 
-use std::{fs::File, io::Write};
+use std::{fs::File, io::Write, path::PathBuf};
 
 use serde::{Serialize, Deserialize};
 
-use crate::other::{chaos::{file_name::{FileName, FilePath}, version_migration::{RJson, Mig}}, path::app_path::AppPath, init::init_file::InitFile};
+use crate::other::{chaos::{file_name::{FileName, FilePath}, version_migration::{RJson, Mig}}, path::app_path::AppPath};
 
 pub mod app_user_list;
 
@@ -27,8 +27,7 @@ pub type AppConfigRJson = RJson<AppConfigRJson_0>;
 
 
 #[derive(Debug,Clone,Default,Serialize, Deserialize)]
-#[serde(default)] 
-struct AppConfigRJson_0 {
+pub struct AppConfigRJson_0 {
     app_user_list: self::app_user_list::AppUserListJson,
 }
 
@@ -47,7 +46,7 @@ impl Mig for AppConfigRJson_0 {
         0
     }
     
-    fn _old_version(now_version:usize)->Self {
+    fn _old_version(now_version:usize)->(AppConfigRJson_0, PathBuf) {
         todo!()
     }
 }

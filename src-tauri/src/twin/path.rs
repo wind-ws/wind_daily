@@ -21,7 +21,7 @@ use tauri::{App, Manager};
 use crate::tauri_install_everything;
 
 #[derive(Deserialize, Debug )]
-struct AppAllBasePath {
+pub struct AppAllBasePath {
     app_cache_dir_path : PathBuf,
     app_config_dir_path : PathBuf,
     app_data_dir_path : PathBuf,
@@ -107,25 +107,11 @@ impl BaseDirectory {
 
 static mut ALL_BASE_PATH:Option<AppAllBasePath> = None;
 
-// todo 改成 init 调用 command
-pub fn event_listening_event_modify_path(app:&mut App)->Result<(), Box<dyn std::error::Error>>{
-    let mut id: tauri::EventHandler;
-    id= app.listen_global("event_modify_path",
-    move|event|{
-        let json = event.payload().unwrap();//它不应该失败,若失败则需要检查 Ts是否成功传入Path值
-        let app_all_path: AppAllBasePath = serde_json::from_str(json).unwrap();
-        unsafe{
-            // println!("{app_all_path:#?}");
-            ALL_BASE_PATH = Some(app_all_path);
-        }
-        // app.unlisten(id);
-        // todo:(5) 事件完成后 取消监听
-    });
-    Ok(())
-}
 
-
-tauri_install_everything!{
-    let ta;
-    ta.setup(event_listening_event_modify_path)
+#[tauri::command]
+pub fn init_rust_path(json:AppAllBasePath){
+    println!("{json:#?}");    
+    unsafe{
+        ALL_BASE_PATH = Some(json);
+    }
 }
