@@ -29,12 +29,15 @@ pub trait InitPath  {
     fn init_path(){
         Self::get_vec_paths().into_iter().for_each(
             |v| {
-                println!("路径创建:\t{v:?}");//输出创建的全部路径
-                if let Err(e) = std::fs::create_dir(v){
+                if let Err(e) = std::fs::create_dir(&v){
                     match e.kind(){
-                        std::io::ErrorKind::AlreadyExists =>(),
+                        std::io::ErrorKind::AlreadyExists =>{
+                            println!("已存在路径:\t{v:?}");//输出已存在的全部路径
+                        },
                         _=> panic!("除了路径以存在,不应该出现其他错误")
                     }
+                }else {
+                    println!("路径创建:\t{v:?}");//输出创建的全部路径
                 }
             }
         );

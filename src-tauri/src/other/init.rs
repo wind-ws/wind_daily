@@ -13,7 +13,8 @@
 //! ## Description  : 
 //! 初始化模块
 
-use crate::other::chaos::version_migration::example::{MY_JSON};
+use super::chaos::version_migration::example::example_use_myjson;
+
 
 pub mod init_path;
 
@@ -21,6 +22,6 @@ pub mod init_path;
 
 pub fn init(){
     init_path::init_path();
-    println!("{:?}",*MY_JSON);
+    example_use_myjson();
 }
 
