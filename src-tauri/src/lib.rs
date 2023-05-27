@@ -22,7 +22,8 @@ pub fn run() {
 fn install_command(ta: tauri::Builder<tauri::Wry>) -> tauri::Builder<tauri::Wry> {
     ta.invoke_handler(tauri::generate_handler![
         crate::twin::path::init_rust_path,
-        crate::twin::init::rust_init
+        crate::twin::init::rust_init,
+        crate::twin::app::app_config::app_config_command
     ])
 }
 

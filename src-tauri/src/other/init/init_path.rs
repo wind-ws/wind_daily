@@ -32,12 +32,12 @@ pub trait InitPath  {
                 if let Err(e) = std::fs::create_dir(&v){
                     match e.kind(){
                         std::io::ErrorKind::AlreadyExists =>{
-                            println!("已存在路径:\t{v:?}");//输出已存在的全部路径
+                            println!("已存在路径: {v:?}");//输出已存在的全部路径
                         },
                         _=> panic!("除了路径以存在,不应该出现其他错误")
                     }
                 }else {
-                    println!("路径创建:\t{v:?}");//输出创建的全部路径
+                    println!("路径创建: {v:?}");//输出创建的全部路径
                 }
             }
         );

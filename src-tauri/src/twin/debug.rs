@@ -15,7 +15,6 @@
 //! 听起来很酷对吧,实际上仅仅就只是 前端提供界面去调用Rust,来达到debug的功能~  
 //! "装逼,不在于你话有多少,而是对方是否听的懂" ---- 鲁迅
 
-use crate::tauri_install_everything;
 
 
 

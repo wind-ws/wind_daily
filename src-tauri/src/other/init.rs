@@ -19,9 +19,8 @@ use super::chaos::version_migration::example::example_use_myjson;
 pub mod init_path;
 
 
-
+/// 软件每次启动都会进行一次初始化
 pub fn init(){
     init_path::init_path();
-    example_use_myjson();
 }
 

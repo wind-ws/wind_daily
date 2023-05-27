@@ -16,10 +16,13 @@
 
 use std::path::{PathBuf, Path};
 
+use crate::other::init::init_path::InitPath;
+
 pub enum UserPath {
     Config,
     Data
 }
+
 
 impl UserPath {
 
@@ -32,4 +35,28 @@ impl UserPath {
             UserPath::Data => user_root_path.join("data")
         }
     }
+
+    /// 更新 用户文件夹的目录结构,也可用来创建目录结构    
+    /// 若不存在,则创建  
+    pub fn updata_user_path(user_root_path:&Path){
+        vec![
+            UserPath::Config.get_path(user_root_path),
+            UserPath::Data.get_path(user_root_path)
+        ].into_iter().for_each(
+            |v|{
+                if let Err(e) = std::fs::create_dir(&v){
+                    match e.kind(){
+                        std::io::ErrorKind::AlreadyExists =>{
+                            println!("已存在路径: {v:?}");//输出已存在的全部路径
+                        },
+                        _=> panic!("除了路径以存在,不应该出现其他错误")
+                    }
+                }else {
+                    println!("路径创建: {v:?}");//输出创建的全部路径
+                }
+            }
+        );
+        
+    }
+
 }

@@ -1,0 +1,7 @@
+
+
+enum CommandMark {
+    CreateNewUser,
+}
+
+export {}

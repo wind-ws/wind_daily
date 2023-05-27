@@ -16,9 +16,7 @@
 
 
 
-// todo 设计一个包装类型, 要求实现
-// todo 1. 自动更新数据类型,包括 结构版本迭代
-// todo 2. 自动存取
+
 
 use std::{ fmt::Debug, fs::{File, self, OpenOptions}, io::{Read, Write, BufReader},ops::{Deref,DerefMut}, path::{Path, PathBuf}, sync::RwLock};
 use serde::{Serialize, Deserialize, de::DeserializeOwned};
@@ -39,9 +37,9 @@ pub struct RJson<D>
     
     // 当前的版本 , 以防应用长期不更新,出现 中间版本 ,从0开始,若是1则从0迁移到1,若是n则从0->1->...->n-1->n
     // 若 存储版本号 和 最新版本号不一致 则需要做出更新
-    version:usize,
+    pub version:usize,
     
-    data:D,//D类型是最新版本类型
+    pub data:D,//D类型是最新版本类型
     
 }
 
@@ -105,6 +103,12 @@ impl<D:Mig> RJson<D> {
         serde_json::to_writer_pretty(
             file,
             self).unwrap();
+    }
+
+    /// 刷新自己的数据  
+    /// 在有些地方非常有用,例如 切换用户后 程序也需要重新加载用户数据
+    pub fn refresh(&mut self){
+        *self = Self{..Self::updata()};
     }
 }
 

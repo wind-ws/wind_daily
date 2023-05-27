@@ -23,40 +23,11 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug,Clone,Default,Serialize, Deserialize)]
 #[serde(default)] 
 pub struct AppUserListJson{
-    user_count:i32,
-    user_list:HashMap<UserNameJson,UserFolderPathJson>
+    /// 用户数量
+    pub user_count:usize,
+    /// <用户名,用户文件夹路径> //用户名是唯一的
+    pub user_list:HashMap<String,PathBuf>
 }
-    /// 用户名
-    #[derive(   Debug,Clone,Default,
-                PartialEq, Eq, Hash,
-                Serialize, Deserialize)]
-    pub struct UserNameJson(String);
-        impl Deref for UserNameJson {
-            type Target=String;
-            fn deref(&self) -> &Self::Target {                
-                &self.0
-            }
-        }
-        impl DerefMut for UserNameJson {
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-    /// 用户文件夹路径
-    #[derive(   Debug,Clone,Default,
-                Serialize, Deserialize)]
-    pub struct UserFolderPathJson(PathBuf);
-        impl Deref for UserFolderPathJson {
-            type Target=PathBuf;
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            } 
-        }
-        impl DerefMut for UserFolderPathJson {
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
 
 
 
