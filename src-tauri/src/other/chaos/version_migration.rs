@@ -114,6 +114,7 @@ impl<D:Mig> RJson<D> {
 
 
 /// 当这个结构体生命结束时,它会存储一次数据
+#[derive(Debug)]
 pub struct AutoRJson<'d,D:Mig>{
     data:&'d mut D,
 }

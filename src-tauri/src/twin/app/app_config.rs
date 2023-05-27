@@ -56,15 +56,15 @@ mod create_new_user{
         auto.app_user_list.user_list.insert(name.clone(), user_root_path.clone());
         auto.app_user_list.user_count = auto.app_user_list.user_list.len();
         
-        auto.switch_active_user(ActiveUser{name,path:user_root_path});//将它设为活动用户
+        auto.switch_active_user(ActiveUser{name,path:user_root_path});//将它设为活动用户,这会创建所有用户文件
         
         // 用户文件会在使用时 进行更新(若不存在则创建) , 所以这里不用关心 文件们
-
+        println!("{:#?}",auto);
         Ok(())
     }
 
     fn user_default_path()->PathBuf {
-        AppPath::DefaultUser.get_path()
+        AppPath::DefaultUserPath.get_path()
     }
 }
 

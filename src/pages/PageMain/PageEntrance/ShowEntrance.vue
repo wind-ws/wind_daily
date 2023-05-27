@@ -1,20 +1,47 @@
 <script lang = "ts" setup>
     import {EllipsisVerticalIcon, PlayIcon} from "@heroicons/vue/24/outline"
-    import {Popup} from 'vant';
+    import {Popup,Button,Field,showToast} from 'vant';
     import {ref} from "vue";
-    import {is_path_access} from "../../../ts_src/twin/debug/path_access";
+    import {CreateNewUser} from "../../../ts_src/twin/app/app_config";
 
     const show_popup = ref(false);
 
+
+    const show_popup_create_new_user = ref(false);
+    const user_name = ref("");
+    function create_new_user(){
+      if(user_name.value==""){
+        showToast("不能为空");
+        return;
+      }
+      if(! /^[\u4E00-\u9FA5a-zA-Z_]+$/u.test(user_name.value)){
+        showToast("用户名只能是字母和中文和下划线");
+        return;
+      }
+      CreateNewUser.create_new_user(user_name.value)
+              .catch(v=>showToast(v));
+
+    }
 
 </script>
 
 <template>
   <Popup v-model:show = "show_popup"
-         class = "h-1/5 p-2"
-         round style = " width: 70%">
-  
+         class = "h-auto p-2"
+         round style = " width: 60%">
+    <div class="w-full h-16 leading-[4rem] text-center "
+         @click="show_popup_create_new_user=!show_popup_create_new_user">
+      <span class="inline-block h-full text-xl">创建新用户</span>
+    </div>
   </Popup>
+  <Popup v-model:show = "show_popup_create_new_user"
+         class = "h-auto p-2"
+         round style = " width: 70%">
+    <Field v-model="user_name" input-align="center"  placeholder="请输入用户名"  />
+    <Button color="#009488" class="w-full " plain hairline
+            @click="create_new_user()">创建新用户</Button>
+  </Popup>
+
   <div class = "mt-28 w-full text-center text-5xl">
     <span class = " bg-clip-text dark:text-transparent
                     bg-gradient-to-r
@@ -35,7 +62,7 @@
       <div class = "h-full w-[73%] text-center
                   border-solid border-4 rounded-l-lg border-teal-600"
            style = "float: left;line-height:55px "
-           @click="is_path_access()">
+           >
         <PlayIcon class = "w-10 text-teal-500 inline"></PlayIcon>
 
       </div>

@@ -23,7 +23,7 @@ pub mod theme;
 
 lazy_static!{
     pub static ref USER_CONFIG_RJSON: RwLock<UserConfigRJson> = {
-        UserConfigRJson::updata().into()
+        UserConfigRJson::updata().into()//todo 没能成功被创建,可能是 死循环 或 死锁
     };
 }
 
