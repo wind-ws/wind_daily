@@ -18,44 +18,19 @@ use std::{fs::File, io::Write, path::PathBuf, sync::{RwLock, RwLockWriteGuard}};
 
 use serde::{Serialize, Deserialize};
 
-use crate::other::{chaos::{file_name::{FileName, FilePath}, version_migration::{RJson, Mig}}, path::app_path::AppPath};
+use crate::{other::{chaos::{file_name::{FileName, FilePath}, version_migration::{RJson, Mig}}, path::app_path::AppPath}, static_rjson};
 
 use self::{active_user::ActiveUser, app_user_list::AppUserListJson};
 
 pub mod app_user_list;
 pub mod active_user;
 
-// lazy_static!{
-//     pub static ref APP_CONFIG_RJSON:RwLock<AppConfigRJson> ={
-//         AppConfigRJson::updata().into()
-//     };
-// }
-/// App配置文件的根
-pub type AppConfigRJson = RJson<AppConfigRJson0>;
-static mut APP_CONFIG_RJSON:Option<RwLock<AppConfigRJson>> =None;
-impl AppConfigRJson {
-    fn init() {
-        unsafe {
-            if let None = APP_CONFIG_RJSON {
-                APP_CONFIG_RJSON = Some(RwLock::new(AppConfigRJson::updata()));
-            }
-        }
-    }
-    pub fn get_mut_lock()->&'static mut RwLock<AppConfigRJson>{
-        Self::init();
-        unsafe {
-            APP_CONFIG_RJSON.as_mut().unwrap()
-        }
-    }
-    pub fn get_lock()->&'static RwLock<AppConfigRJson>{
-        Self::init();
-        unsafe { 
-            APP_CONFIG_RJSON.as_ref().unwrap() 
-        }
-    }
+
+static_rjson!{
+    /// App配置文件的根
+    pub type AppConfigRJson = RJson<AppConfigRJson0>;
+    static mut APP_CONFIG_RJSON;
 }
-
-
 
 #[derive(Debug,Clone,Default,Serialize, Deserialize)]
 pub struct AppConfigRJson0 {

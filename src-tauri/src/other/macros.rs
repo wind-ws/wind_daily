@@ -57,6 +57,40 @@ macro_rules! tauri_install_everything {
 }
 
 
+/// 快捷定义 静态的Rjson变量
+#[macro_export]
+macro_rules! static_rjson {
+    (
+        $(#[$meta:meta])*//meta主要是处理 #[doc = "..."]
+        pub type $type_name:ident = RJson<$ty:ty>;
+        static mut $static_name:ident;
+    ) => {
+        $(#[$meta])*
+        pub type $type_name = RJson<$ty>;
+        static mut $static_name:Option<RwLock<$type_name>> =None;
+        impl $type_name {
+            fn init() {
+                unsafe {
+                    if let None = $static_name {
+                        $static_name = Some(RwLock::new($type_name::updata()));
+                    }
+                }
+            }
+            pub fn get_mut_lock()->&'static mut RwLock<$type_name>{
+                Self::init();
+                unsafe {
+                    $static_name.as_mut().unwrap()
+                }
+            }
+            pub fn get_lock()->&'static RwLock<$type_name>{
+                Self::init();
+                unsafe { 
+                    $static_name.as_ref().unwrap() 
+                }
+            }
+        }
+    };
+}
 
 
 /// 孵化中的宏 ,禁止使用

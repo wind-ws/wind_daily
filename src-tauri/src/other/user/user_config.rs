@@ -17,7 +17,7 @@ use std::{path::PathBuf, sync::RwLock};
 
 use serde::{Serialize, Deserialize};
 
-use crate::other::{chaos::{version_migration::{RJson, Mig}, file_name::{FileName, FilePath}}, app::app_config::{ AppConfigRJson}, path::user_path::UserPath};
+use crate::{other::{chaos::{version_migration::{RJson, Mig}, file_name::{FileName, FilePath}}, app::app_config::{ AppConfigRJson}, path::user_path::UserPath}, static_rjson};
 
 pub mod theme;
 
@@ -32,30 +32,12 @@ pub mod theme;
 // }
 
 
-/// User配置文件的根
-pub type UserConfigRJson = RJson<UserConfigRJson0>;
-static mut USER_CONFIG_RJSON:Option<RwLock<UserConfigRJson>> =None;
-impl UserConfigRJson {
-    fn init() {
-        unsafe {
-            if let None = USER_CONFIG_RJSON {
-                USER_CONFIG_RJSON = Some(RwLock::new(UserConfigRJson::updata()));
-            }
-        }
-    }
-    pub fn get_mut_lock()->&'static mut RwLock<UserConfigRJson>{
-        Self::init();
-        unsafe {
-            USER_CONFIG_RJSON.as_mut().unwrap()
-        }
-    }
-    pub fn get_lock()->&'static RwLock<UserConfigRJson>{
-        Self::init();
-        unsafe { 
-            USER_CONFIG_RJSON.as_ref().unwrap() 
-        }
-    }
-}
+
+static_rjson!(
+    /// User配置文件的根
+    pub type UserConfigRJson = RJson<UserConfigRJson0>;
+    static mut USER_CONFIG_RJSON;
+);
 
 
 #[derive(Debug,Clone,Default,Serialize, Deserialize)]
@@ -69,7 +51,7 @@ impl FileName for UserConfigRJson0 {
 }
 impl FilePath for UserConfigRJson0 {
     fn get_file_path()->std::path::PathBuf {
-        // let lock = APP_CONFIG_RJSON.read().unwrap();//! 死锁_156845
+        // let lock = APP_CONFIG_RJSON.read().unwrap();//! 已解决 死锁_156845
         let lock = AppConfigRJson::get_lock().read().unwrap();
         UserPath::Config.get_path(&lock.get_active_user().path)
     }
