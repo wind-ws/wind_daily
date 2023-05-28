@@ -15,7 +15,7 @@
 
 use std::{fs::File, path::{PathBuf}};
 
-use crate::{tauri_install_everything, twin::path::BaseDirectory};
+use crate::{twin::path::BaseDirectory};
 
 
 #[tauri::command]

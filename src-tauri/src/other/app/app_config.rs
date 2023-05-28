@@ -14,7 +14,7 @@
 //! App的配置管理
 
 
-use std::{fs::File, io::Write, path::PathBuf, sync::{RwLock, RwLockWriteGuard}};
+use std::{path::PathBuf, sync::{RwLock}};
 
 use serde::{Serialize, Deserialize};
 
@@ -56,7 +56,7 @@ impl Mig for AppConfigRJson0 {
         0
     }
     
-    fn _old_version(now_version:usize)->(AppConfigRJson0, PathBuf) {
+    fn _old_version(_now_version:usize)->(AppConfigRJson0, PathBuf) {
         todo!()
     }
 }

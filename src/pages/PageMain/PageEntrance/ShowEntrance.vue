@@ -21,7 +21,7 @@
         }
         CreateNewUser.create_new_user(user_name.value)
             .catch(v => showToast(v));
-        
+
     }
 
 </script>

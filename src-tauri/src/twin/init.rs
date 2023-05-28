@@ -1,4 +1,4 @@
-use crate::{tauri_install_everything, other};
+use crate::{other};
 
 
 #[tauri::command]

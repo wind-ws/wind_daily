@@ -21,16 +21,6 @@ use crate::{other::{chaos::{version_migration::{RJson, Mig}, file_name::{FileNam
 
 pub mod theme;
 
-// lazy_static!{
-//     pub static ref USER_CONFIG_RJSON_LOCK: RwLock<&'static mut UserConfigRJson> = {
-//         // UserConfigRJson::updata().into()//todo 没能成功被创建,可能是 死循环 或 死锁
-//         // RwLock::new(&USER_CONFIG_RJSON)
-//     };
-//     // pub static ref USER_CONFIG_RJSON:UserConfigRJson = {
-//     //     UserConfigRJson::updata()
-//     // };
-// }
-
 
 
 static_rjson!(
@@ -61,7 +51,7 @@ impl Mig for UserConfigRJson0 {
         0
     }
     
-    fn _old_version(now_version:usize)->(Self, PathBuf) {
+    fn _old_version(_now_version:usize)->(Self, PathBuf) {
         todo!()
     }
 }

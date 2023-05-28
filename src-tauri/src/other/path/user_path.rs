@@ -16,7 +16,6 @@
 
 use std::path::{PathBuf, Path};
 
-use crate::other::init::init_path::InitPath;
 
 pub enum UserPath {
     Config,

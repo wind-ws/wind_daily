@@ -16,9 +16,7 @@
 
 use std::{path::{PathBuf, Path}};
 use serde::Deserialize;
-use tauri::{App, Manager};
 
-use crate::tauri_install_everything;
 
 #[derive(Deserialize, Debug )]
 pub struct AppAllBasePath {

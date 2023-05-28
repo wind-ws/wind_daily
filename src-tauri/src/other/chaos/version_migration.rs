@@ -18,9 +18,9 @@
 
 
 
-use std::{ fmt::Debug, fs::{File, self, OpenOptions}, io::{Read, Write, BufReader},ops::{Deref,DerefMut}, path::{Path, PathBuf}, sync::RwLock};
+use std::{ fmt::Debug, fs::{File, self, OpenOptions},ops::{Deref,DerefMut}, path::{Path, PathBuf}};
 use serde::{Serialize, Deserialize, de::DeserializeOwned};
-use serde_json::{json, Value};
+use serde_json::{json};
 use super::file_name::FilePath;
 
 // 术语统一
@@ -71,7 +71,7 @@ impl<D:Mig> RJson<D> {
     /// 这个函数在 初始化 创建结构体的 时候运行一次就可以了
     pub fn updata()->Self{
         let json = D::_updata(0);// 直到0为止,或搜索到now_version
-        let mut json = Self{
+        let json = Self{
             version:D::get_version(),
             data:json,
         };
@@ -231,7 +231,9 @@ pub trait Mig
     /// 若老版本 文件路径 不等于 当前版本文件路径 ,则删除老版本文件  
     fn _delete_file(old_path:&Path){
         if old_path != Self::get_file_position(){
-            fs::remove_file(old_path);
+            if let Ok(_) = fs::remove_file(old_path){
+                println!("移除目录:{old_path:?}");
+            }
         }
     }
 
@@ -244,14 +246,14 @@ pub trait Mig
 /// 以下 是可运行的
 pub mod example {
     
-    use std::{path::PathBuf, io::Read, sync::RwLock};
+    use std::{path::PathBuf, sync::RwLock};
 
     use crate::other::{chaos::file_name::FileName, path::app_path::AppPath};
 
     use super::*;
 
     lazy_static!{
-        pub static ref MY_JSON:RwLock<MyJson> = {//todo 删除RwLock试试
+        pub static ref MY_JSON:RwLock<MyJson> = {
             MyJson::updata().into()
         };
     }
@@ -349,7 +351,7 @@ pub mod example {
             0
         }
 
-        fn _old_version(now_version:usize)->(Self, PathBuf) {
+        fn _old_version(_now_version:usize)->(Self, PathBuf) {
             todo!("我是第一版,我不应该被运行")
         }
     }
