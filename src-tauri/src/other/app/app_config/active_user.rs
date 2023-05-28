@@ -4,7 +4,9 @@ use std::{path::{Path, PathBuf}, any::Any};
 
 use serde::{Deserialize, Serialize};
 
-use crate::other::{user::user_config::USER_CONFIG_RJSON, chaos::version_migration::{RJson, Mig}};
+use crate::other::{ chaos::version_migration::{RJson, Mig}, app::app_config::{AppConfigRJson, APP_CONFIG_RJSON}, user::user_config::UserConfigRJson};
+
+
 
 
 /// 启动开启的用户 (上一次使用的用户)  
@@ -19,8 +21,9 @@ pub struct ActiveUser {
 impl ActiveUser {
     
     /// 刷新所有用户状态
-    pub(super) fn refresh_all_user_states(){
-        USER_CONFIG_RJSON.write().unwrap().refresh();
+    pub(super) fn  refresh_all_user_states(){
+        UserConfigRJson::get_mut_lock().get_mut().unwrap().refresh();
+
         // 一定要刷新, 否则 切换用户后,还是用的原来的用户状态
     }
 }

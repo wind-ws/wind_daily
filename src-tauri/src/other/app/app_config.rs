@@ -14,7 +14,7 @@
 //! App的配置管理
 
 
-use std::{fs::File, io::Write, path::PathBuf, sync::RwLock};
+use std::{fs::File, io::Write, path::PathBuf, sync::{RwLock, RwLockWriteGuard}};
 
 use serde::{Serialize, Deserialize};
 
@@ -25,13 +25,36 @@ use self::{active_user::ActiveUser, app_user_list::AppUserListJson};
 pub mod app_user_list;
 pub mod active_user;
 
-lazy_static!{
-    pub static ref APP_CONFIG_RJSON:RwLock<AppConfigRJson> ={
-        AppConfigRJson::updata().into()
-    };
-}
+// lazy_static!{
+//     pub static ref APP_CONFIG_RJSON:RwLock<AppConfigRJson> ={
+//         AppConfigRJson::updata().into()
+//     };
+// }
 /// App配置文件的根
 pub type AppConfigRJson = RJson<AppConfigRJson0>;
+static mut APP_CONFIG_RJSON:Option<RwLock<AppConfigRJson>> =None;
+impl AppConfigRJson {
+    fn init() {
+        unsafe {
+            if let None = APP_CONFIG_RJSON {
+                APP_CONFIG_RJSON = Some(RwLock::new(AppConfigRJson::updata()));
+            }
+        }
+    }
+    pub fn get_mut_lock()->&'static mut RwLock<AppConfigRJson>{
+        Self::init();
+        unsafe {
+            APP_CONFIG_RJSON.as_mut().unwrap()
+        }
+    }
+    pub fn get_lock()->&'static RwLock<AppConfigRJson>{
+        Self::init();
+        unsafe { 
+            APP_CONFIG_RJSON.as_ref().unwrap() 
+        }
+    }
+}
+
 
 
 #[derive(Debug,Clone,Default,Serialize, Deserialize)]
@@ -67,7 +90,9 @@ impl AppConfigRJson0 {
     
     /// 切换活动用户
     pub fn switch_active_user(&mut self,active_user:ActiveUser){
+        
         self.active_user = Some(active_user);
+        
         ActiveUser::refresh_all_user_states();//刷新 所有 用户 文件状态
     }
 

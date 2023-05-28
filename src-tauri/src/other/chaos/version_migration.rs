@@ -60,6 +60,13 @@ impl<D:Mig> DerefMut for RJson<D>{
 
 impl<D:Mig> RJson<D> {
     
+    /// 不更新,直接读取文件
+    /// 不存在会panic
+    // pub fn get()->Self{ //不应该有这个,这只会让bug越来越多, 当文件的静态状态还没存储时,获取的文件状态和静态状态是不等同的
+    //     let file = File::open(D::get_file_position()).unwrap();
+    //     serde_json::from_reader(file).unwrap()
+    // }
+
     /// 想要D具有迁移能力,只需要D实现Mig和它的老版本也实现Mig
     /// 这个函数在 初始化 创建结构体的 时候运行一次就可以了
     pub fn updata()->Self{
@@ -69,7 +76,8 @@ impl<D:Mig> RJson<D> {
             data:json,
         };
         let d_type_name = std::any::type_name::<D>();
-        println!("RJson<{d_type_name}>:\n{json:#?}\n");
+        let position = D::get_file_position();
+        println!("\n文件更新:{position:?}\nRJson<{d_type_name}>:\n{json:#?}\n");
         Self::_updata_file(&json);
         json
     }
