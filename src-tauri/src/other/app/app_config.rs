@@ -71,8 +71,8 @@ impl AppConfigRJson0 {
         ActiveUser::refresh_all_user_states();//刷新 所有 用户 文件状态
     }
 
-    pub fn get_active_user(&self)->&ActiveUser{
-        self.active_user.as_ref().unwrap() //调用这个函数的位置,它不应该不存在,既 它必须存在
+    pub fn get_active_user(&self)->Option<&ActiveUser>{
+        self.active_user.as_ref()
     }
 }
 

@@ -43,7 +43,7 @@ impl FilePath for UserConfigRJson0 {
     fn get_file_path()->std::path::PathBuf {
         // let lock = APP_CONFIG_RJSON.read().unwrap();//! 已解决 死锁_156845
         let lock = AppConfigRJson::get_lock().read().unwrap();
-        UserPath::Config.get_path(&lock.get_active_user().path)
+        UserPath::Config.get_path(&lock.get_active_user().unwrap().path)
     }
 }
 impl Mig for UserConfigRJson0 {

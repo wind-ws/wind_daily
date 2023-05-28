@@ -1,14 +1,12 @@
-import { invoke } from '@tauri-apps/api/tauri'
-
+import {Command, invoke} from "../../invoke";
 
 export enum CommandMark {
     CreateNewUser="CreateNewUser",
+    GetActiveUser="GetActiveUser"
 }
-type Data<D> = {mark:string,data:D};
-function get_data<D>(mark:CommandMark,data:D):Data<D>{
-    return {mark,data}
-}
-// todo 包装 invoke 让他可以被限制, 可读性高的和Rust交互
+
+export {CreateNewUser,ActiveUser};
+
 
 namespace CreateNewUser{
     type CreateNewUserData={
@@ -17,11 +15,23 @@ namespace CreateNewUser{
     };
     
     export function create_new_user(name:string,path?:string){
-        return invoke('app_config_command',get_data<CreateNewUserData>(
+        return invoke<CreateNewUserData,CommandMark>(Command.app_config_command,[
             CommandMark.CreateNewUser,
-            {name,path}))
+            {name,path}
+        ])
     }
 }
 
 
-export {CreateNewUser};
+namespace ActiveUser{
+    type ActiveUser = {
+        name:string,
+        path?:string
+    }
+    export function get_active_user():Promise<ActiveUser>{
+        return invoke<null,CommandMark,ActiveUser>(Command.app_config_command,[
+            CommandMark.GetActiveUser,
+            null
+         ])
+    }
+}

@@ -4,30 +4,34 @@ use serde_json::{Value, from_value};
 
 
 
-
-
 /// 只注册一个命令, 通过 symbol 来触发不同的业务
 #[derive(Debug,Deserialize,Serialize)]
 pub enum CommandMark {
-    CreateNewUser,
+    CreateNewUser,//创建新用户
+    GetActiveUser,//获取活动用户
+    
 }
 /// 所有业务统一用一个 Error处理
 #[derive(Debug, thiserror::Error,Serialize,Deserialize)]
 pub enum CommandError {
     #[error("用户名已存在")]
     UserNameExist,
+    #[error("活动用户不存在")]
+    ActiveUserNotExist,
 }
 
 type Res = Result<Value,CommandError>;
 
 #[tauri::command]
 pub fn app_config_command(mark:CommandMark,data:Value)->Res{
-
+    println!("命令触发:{mark:?}-->\n{data:#?}");
     match mark {
-        CommandMark::CreateNewUser =>create_new_user::create_new_user(from_value(data).unwrap()),
+        CommandMark::CreateNewUser  =>  create_new_user::create_new_user(from_value(data).unwrap()),
+        CommandMark::GetActiveUser  =>  active_user::get_active_user(),
     }
 }
 
+/// 创建新用户
 mod create_new_user{
     use std::{path::PathBuf, fs};
 
@@ -67,5 +71,22 @@ mod create_new_user{
     }
 }
 
+/// 活动用户
+mod active_user {
+
+    use crate::other::app::app_config::AppConfigRJson;
+
+    use super::*;
+    
+    /// 获取活动用户
+    /// 不存在则Err返回
+    pub(super) fn get_active_user()-> super::Res{
+        let lock = AppConfigRJson::get_lock().read().unwrap();
+        match lock.get_active_user() {
+            Some(v) => Ok(serde_json::to_value(v).unwrap()),
+            None => Err(CommandError::ActiveUserNotExist),
+        }
+    }
+}
 
 

@@ -11,9 +11,14 @@
 
 <script lang="ts">
     import {RouteRecordRaw} from "vue-router";
+    import PageNavigate,{PageNavigateChildren} from "./PageHome/PageNavigate.vue";
 
     export const PageHomeChildren: RouteRecordRaw[] = [
-
+      {
+        path:"",
+        component:PageNavigate,
+        children:PageNavigateChildren
+      }
     ];
     export default {}
 </script>
