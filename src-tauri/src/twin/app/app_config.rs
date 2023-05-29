@@ -85,7 +85,7 @@ mod active_user {
         match lock.get_active_user() {
             Some(v) => Ok(serde_json::to_value(v).unwrap()),
             None => Err(CommandError::ActiveUserNotExist),
-        }
+        } 
     }
 }
 

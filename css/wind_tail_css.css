@@ -1,6 +1,8 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 /*在这里配置 tailwind_css 的基础主题配色*/
 @layer base {

@@ -6,8 +6,7 @@ import {app_init_after, app_init_before} from "./ts_src/init";
 //import 插件
 import router from "./router";
 //import css
-import "../main_style.css";
-import 'vant/lib/index.css';
+import "../css/main_style.css";
 //-------------------------------
 app_init_before();
 //-------------------------------

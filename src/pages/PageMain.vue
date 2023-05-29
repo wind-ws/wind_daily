@@ -11,26 +11,25 @@
     import PageHome, {PageHomeChildren} from "./PageMain/PageHome.vue";
     import PageEntrance, {PageEntranceChildren} from "./PageMain/PageEntrance.vue";
     import {ActiveUser} from "../ts_src/twin/app/app_config";
-
+    
     export const PageMainChildren: RouteRecordRaw[] = [
         {
             path: "",
             component: PageEntrance,
             children: PageEntranceChildren,
-            beforeEnter: (to, from,next) => {
-                let is: boolean | string = true;
-                ActiveUser.get_active_user()
-                    .then((v) => {
+            beforeEnter: (to, from, next) => {
+
+                ActiveUser.get_active_user()//若存在活动用户则 直接进入Home
+                    .then(v => {
                         console.log(v);
-                        is = "/home"
-                    }).catch((v) => {
+                        next("/home")
+                    }).catch(v => {
                         console.log(v)
                     })
-                // todo 高忘记了,如何让这个函数等待他完成...
-                console.log("abc")
-                return is
+                if(to.path!="/")
+                  next("/")
             },
-
+            
         },
         {
             path: "/home",

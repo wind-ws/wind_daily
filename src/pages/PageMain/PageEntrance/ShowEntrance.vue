@@ -3,6 +3,10 @@
     import {Button, Field, Popup, showToast} from 'vant';
     import {ref} from "vue";
     import {CreateNewUser} from "../../../ts_src/twin/app/app_config";
+    import { useRouter } from 'vue-router';
+
+    const router = useRouter();
+
 
     const show_popup = ref(false);
 
@@ -20,6 +24,7 @@
             return;
         }
         CreateNewUser.create_new_user(user_name.value)
+            .then(_=>router.push('/home'))
             .catch(v => showToast(v));
 
     }
@@ -40,7 +45,7 @@
          round style = " width: 70%">
     <Field v-model = "user_name" input-align = "center" placeholder = "请输入用户名" />
     <Button class = "w-full" color = "#009488" hairline plain
-            @click = "create_new_user()">创建新用户
+            @click = "create_new_user">创建新用户
     </Button>
   </Popup>
 
