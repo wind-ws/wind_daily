@@ -18,12 +18,12 @@ pub struct ActiveUser {
 }
 
 
-impl ActiveUser {
+// impl ActiveUser {
     
-    /// 刷新所有用户状态
-    pub(super) fn  refresh_all_user_states(){
-        UserConfigRJson::get_mut_lock().get_mut().unwrap().refresh();
+//     /// 刷新所有用户状态
+//     pub(super) fn  refresh_all_user_states(){
+//         UserConfigRJson::get_mut_lock().get_mut().unwrap().refresh();
 
-        // 一定要刷新, 否则 切换用户后,还是用的原来的用户状态
-    }
-}
+//         // 一定要刷新, 否则 切换用户后,还是用的原来的用户状态
+//     }
+// }

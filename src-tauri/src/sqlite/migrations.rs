@@ -11,8 +11,15 @@
 //! `FilePath        ` : /src-tauri/src/sqlite/migrations.rs
 //! 
 //! ## Description  : 
-//! SQLite 迁移&更新&回溯 模块
-
+//! SQLite 迁移(更新&回溯) 模块
+//! 这个模块是为 用户存储的数据库 迁移 (即 存储版本 和 最新版本 不同时,对本地更新到最新版本)
+//! 
+//! 本地代码编写 运行 
+//! 创建一个迁移 `diesel migration generate name` name 是迁移名
+//! todo 看看这些命令的细节
+//! 进行 `diesel migration run`
+//! 进行 `diesel migration redo`
+//! 进行 `diesel migration revert`
 
 use diesel::sqlite::Sqlite;
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
@@ -22,10 +29,6 @@ pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./migrations");
 
 pub fn run_migrations(connection: &mut impl MigrationHarness<Sqlite>)  {
 
-    // This will run the necessary migrations.
-    //
-    // See the documentation for `MigrationHarness` for
-    // all available methods.
     connection.run_pending_migrations(MIGRATIONS).unwrap();
 
 }

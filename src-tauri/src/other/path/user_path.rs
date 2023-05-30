@@ -19,7 +19,8 @@ use std::path::{PathBuf, Path};
 
 pub enum UserPath {
     Config,
-    Data
+    Data,
+    Db
 }
 
 
@@ -31,7 +32,8 @@ impl UserPath {
     pub fn get_path(&self,user_root_path:&Path)-> PathBuf{
         match self {
             UserPath::Config => user_root_path.join("config"),
-            UserPath::Data => user_root_path.join("data")
+            UserPath::Data   => user_root_path.join("data"),
+            UserPath::Db     => user_root_path.join("db")
         }
     }
 
@@ -40,7 +42,8 @@ impl UserPath {
     pub fn updata_user_path(user_root_path:&Path){
         vec![
             UserPath::Config.get_path(user_root_path),
-            UserPath::Data.get_path(user_root_path)
+            UserPath::Data  .get_path(user_root_path),
+            UserPath::Db    .get_path(user_root_path)
         ].into_iter().for_each(
             |v|{
                 if let Err(e) = std::fs::create_dir(&v){

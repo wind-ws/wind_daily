@@ -23,7 +23,7 @@ pub mod theme;
 
 
 
-static_rjson!(
+static_rjson!(// todo wait delete
     /// User配置文件的根
     pub type UserConfigRJson = RJson<UserConfigRJson0>;
     static mut USER_CONFIG_RJSON;

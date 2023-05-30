@@ -67,8 +67,8 @@ impl AppConfigRJson0 {
     pub fn switch_active_user(&mut self,active_user:ActiveUser){
         
         self.active_user = Some(active_user);
-        
-        ActiveUser::refresh_all_user_states();//刷新 所有 用户 文件状态
+        //todo 更改 数据库连接
+        // ActiveUser::refresh_all_user_states();//刷新 所有 用户 文件状态
     }
 
     pub fn get_active_user(&self)->Option<&ActiveUser>{
