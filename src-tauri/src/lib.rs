@@ -7,7 +7,7 @@ extern crate lazy_static;
 pub mod twin;
 pub mod other;
 pub mod test;
-
+pub mod sqlite;
 
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

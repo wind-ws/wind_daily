@@ -17,14 +17,15 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2.0.0-alpha", features = [] }
 
 [dependencies]
-tauri = { version = "2.0.0-alpha", features = ["api-all"] }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-lazy_static = "1.4"
-thiserror = "1.0"
-rusqlite = "0.29.0"
-diesel = "2.1.0"
-# anyhow = "1.0"
+tauri = { version = "2.0.0-alpha", features = ["api-all"] }  # 核心框架
+serde = { version = "1.0", features = ["derive"] } # 序列化和反序列化
+serde_json = "1.0" # json序列化和反序列化
+lazy_static = "1.4" # 惰性加载静态变量
+thiserror = "1.0" # 提供非常方便的宏去定义 Error
+# anyhow = "1.0" 
+# rusqlite = "0.29.0" # SQLite FFI
+diesel =  { version = "2.1.0", features = ["sqlite"] } # SQLite 的ORM框架
+diesel_migrations = "2.1.0" # SQLite 迁移宏
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

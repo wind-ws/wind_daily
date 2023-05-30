@@ -12,7 +12,8 @@
 * Heroicons 2 (图标库)
 ## 后端
 * tauri 2.0.0-alpha (核心后端框架)
-
+* rusqlite 0.29.0 (SQLite支持)
+* diesel 2.1.0 (SQLite的ORM包装)
 
 # 计划
 ## 正在进行
