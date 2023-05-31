@@ -15,23 +15,25 @@
     export const PageMainChildren: RouteRecordRaw[] = [
         {
             path: "",
-            component: PageEntrance,
-            children: PageEntranceChildren,
+            // redirect: "/entrance",
+            component:  {
+                template: '<div>我永远不应该被看见</div>',
+            },
             beforeEnter: (to, from, next) => {
-
-                ActiveUser.get_active_user()//若存在活动用户则 直接进入Home
+                ActiveUser.get_active_user()//若存在活动用户则 直接进入Home,不存在则进入Entrance
                     .then(v => {
                         console.log(v);
                         next("/home")
                     }).catch(v => {
                         console.log(v)
+                        next("/entrance")
                     })
-                if(to.path!="/")
-                  next("/")
             },
-            
-        },
-        {
+        },{
+            path: "/entrance",
+            component: PageEntrance,
+            children: PageEntranceChildren,
+        },{
             path: "/home",
             component: PageHome,
             children: PageHomeChildren

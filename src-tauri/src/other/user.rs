@@ -17,5 +17,4 @@
 //! 用户User 指的是 每一个单独的用户文件夹
 
 
-pub mod user_config;
 pub mod user_db;

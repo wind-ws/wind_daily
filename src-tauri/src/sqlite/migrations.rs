@@ -24,9 +24,9 @@
 use diesel::sqlite::Sqlite;
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 
-pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./migrations");
+pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./migrations");//迁移的目录
 
-
+/// 迁移函数的文档: https://docs.rs/diesel_migrations/2.0.0/diesel_migrations/struct.HarnessWithOutput.html
 pub fn run_migrations(connection: &mut impl MigrationHarness<Sqlite>)  {
 
     connection.run_pending_migrations(MIGRATIONS).unwrap();

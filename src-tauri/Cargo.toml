@@ -26,6 +26,7 @@ thiserror = "1.0" # 提供非常方便的宏去定义 Error
 # rusqlite = "0.29.0" # SQLite FFI
 diesel =  { version = "2.1.0", features = ["sqlite","r2d2"] } # SQLite 的ORM框架
 diesel_migrations = "2.1.0" # SQLite 迁移宏
+r2d2 = "0.8.10" 
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

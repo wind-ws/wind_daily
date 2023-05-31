@@ -48,7 +48,6 @@ mod create_new_user{
         path:PathBuf,//将会在这个路径下创建 用户文件夹 (以name创建文件夹名)
     }
     pub(super) fn create_new_user(CreateNewUserData{name,path}:CreateNewUserData)->Res{
-        // let mut lock = APP_CONFIG_RJSON.write().unwrap();//! 已解决 死锁_156845 
         let lock = AppConfigRJson::get_mut_lock().get_mut().unwrap();
         let mut auto = lock.auto();
         //我讨厌 写这种代码, 就像我无聊且充实的日常生活一样, 事多 还不好玩🥀🥀🥀
@@ -60,9 +59,7 @@ mod create_new_user{
         UserPath::updata_user_path(&user_root_path);//create all user directory
         auto.app_user_list.user_list.insert(name.clone(), user_root_path.clone());
         auto.app_user_list.user_count = auto.app_user_list.user_list.len();
-        auto.switch_active_user(ActiveUser{name,path:user_root_path});//将它设为活动用户,这会创建所有用户文件
-        
-        // 用户文件会在使用时 进行更新(若不存在则创建) , 所以这里不用关心 文件们
+        auto.switch_active_user(ActiveUser{name,path:user_root_path});//将它设为活动用户,这会切换用户数据库
         Ok(Value::Null)
     }
 

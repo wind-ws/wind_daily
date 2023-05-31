@@ -18,7 +18,7 @@ use std::{path::PathBuf, sync::{RwLock}};
 
 use serde::{Serialize, Deserialize};
 
-use crate::{other::{chaos::{file_name::{FileName, FilePath}, version_migration::{RJson, Mig}}, path::app_path::AppPath}, static_rjson};
+use crate::{other::{chaos::{file_name::{FileName, FilePath}, version_migration::{RJson, Mig}}, path::app_path::AppPath, user::user_db::Db}, static_rjson, sqlite::migrations::run_migrations};
 
 use self::{active_user::ActiveUser, app_user_list::AppUserListJson};
 
@@ -65,10 +65,12 @@ impl AppConfigRJson0 {
     
     /// 切换活动用户
     pub fn switch_active_user(&mut self,active_user:ActiveUser){
-        
+        println!("切换活动用户:{:?} -> {:?}",
+            if let Some(v)=self.active_user.as_ref(){Some(v)}else{None},
+            &active_user);
         self.active_user = Some(active_user);
-        //todo 更改 数据库连接
-        // ActiveUser::refresh_all_user_states();//刷新 所有 用户 文件状态
+        Db::refresh();//切换用户数据库
+        run_migrations(&mut Db::get().get().unwrap());//执行迁移
     }
 
     pub fn get_active_user(&self)->Option<&ActiveUser>{
