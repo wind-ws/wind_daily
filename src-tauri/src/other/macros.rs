@@ -15,6 +15,8 @@
 
 
 
+
+
 /// 
 /// ## macro description : 
 /// 简化tauri_install_everything的定义
@@ -57,6 +59,7 @@ macro_rules! tauri_install_everything {
 }
 
 
+
 /// 快捷定义 静态的Rjson变量
 #[macro_export]
 macro_rules! static_rjson {
@@ -87,6 +90,47 @@ macro_rules! static_rjson {
                 unsafe { 
                     $static_name.as_ref().unwrap() 
                 }
+            }
+        }
+    };
+}
+
+// diesel的教学文档真是 一言难尽... 
+// diesel的库文档真是 ... 不看源码我都不知道这些玩意咋用的
+/// 快捷定义 SQL中的Json类型
+#[macro_export]
+macro_rules! struct_sql_json {
+    (
+        $( #[$meta:meta] )*
+        $vis:vis struct $name:ident {
+            $(
+                $( #[$field_meta:meta] )*
+                $field_vis:vis $field_name:ident : $field_ty:ty
+            ),*
+            $(,)? 
+        }
+    ) => {
+        #[derive(Debug,serde::Serialize, serde::Deserialize,diesel::AsExpression)]
+        #[diesel(sql_type = diesel::sql_types::Text)]
+        $( #[$meta] )*
+        $vis struct $name {
+            $(
+                $( #[$field_meta] )*
+                $field_vis $field_name : $field_ty
+            ),*
+        }
+        impl diesel::deserialize::FromSql<diesel::sql_types::Text,diesel::sqlite::Sqlite> for Json 
+        where
+            String: diesel::deserialize::FromSql<diesel::sql_types::Text, diesel::sqlite::Sqlite>{
+            fn from_sql(bytes: diesel::sqlite::SqliteValue<'_, '_, '_>) -> diesel::deserialize::Result<Self> {
+                let a = <String as diesel::deserialize::FromSql<diesel::sql_types::Text, diesel::sqlite::Sqlite>>::from_sql(bytes).unwrap();
+                Ok(serde_json::from_str(&a).unwrap())
+            }
+        }
+        impl diesel::serialize::ToSql<diesel::sql_types::Text,diesel::sqlite::Sqlite> for Json {
+            fn to_sql<'b>(&'b self, out: &mut diesel::serialize::Output<'b, '_, diesel::sqlite::Sqlite>) -> diesel::serialize::Result {
+                out.set_value(serde_json::to_string(self).unwrap());
+                Ok(diesel::serialize::IsNull::No)
             }
         }
     };
