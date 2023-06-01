@@ -119,7 +119,7 @@ macro_rules! struct_sql_json {
                 $field_vis $field_name : $field_ty
             ),*
         }
-        impl diesel::deserialize::FromSql<diesel::sql_types::Text,diesel::sqlite::Sqlite> for Json 
+        impl diesel::deserialize::FromSql<diesel::sql_types::Text,diesel::sqlite::Sqlite> for $name 
         where
             String: diesel::deserialize::FromSql<diesel::sql_types::Text, diesel::sqlite::Sqlite>{
             fn from_sql(bytes: diesel::sqlite::SqliteValue<'_, '_, '_>) -> diesel::deserialize::Result<Self> {
@@ -127,7 +127,7 @@ macro_rules! struct_sql_json {
                 Ok(serde_json::from_str(&a).unwrap())
             }
         }
-        impl diesel::serialize::ToSql<diesel::sql_types::Text,diesel::sqlite::Sqlite> for Json {
+        impl diesel::serialize::ToSql<diesel::sql_types::Text,diesel::sqlite::Sqlite> for $name {
             fn to_sql<'b>(&'b self, out: &mut diesel::serialize::Output<'b, '_, diesel::sqlite::Sqlite>) -> diesel::serialize::Result {
                 out.set_value(serde_json::to_string(self).unwrap());
                 Ok(diesel::serialize::IsNull::No)
