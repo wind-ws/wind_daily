@@ -1,6 +1,6 @@
-use diesel::*;
+use diesel::{*, sql_types::Text};
 
-use crate::from_to_sql_json;
+use crate::{from_to_sql_json, sqlite::schema::config};
 
 
 
@@ -8,8 +8,13 @@ use crate::from_to_sql_json;
 #[derive(Queryable)]
 #[derive(Debug,serde::Serialize, serde::Deserialize,diesel::AsExpression)]
 #[diesel(sql_type = diesel::sql_types::Text)]
-// #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct ThemeJson {
     theme:String
 }
 from_to_sql_json!(ThemeJson);
+
+impl super::ConfigKey<config::SqlType> for ThemeJson {
+    fn get_key() -> &'static str {
+        "theme"
+    }
+}

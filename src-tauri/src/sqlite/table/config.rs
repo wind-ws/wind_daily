@@ -1,6 +1,6 @@
 
 
-use diesel::prelude::*;
+use diesel::{prelude::*, sqlite::Sqlite};
 use serde::{Deserialize, Serialize};
 
 use crate::{sqlite::schema::config, other::user::user_db::Db, from_to_sql_json};
@@ -19,23 +19,23 @@ pub struct Config {
 }
 
 
-
-pub enum ConfigKey {
-    Theme
-}
-impl ConfigKey {
-    pub fn get_key(&self) -> &'static str{
-        match self {
-            ConfigKey::Theme => "theme",
-        }
-    }
-    pub fn get_json<T:serde::Serialize+serde::de::DeserializeOwned>(&self)->T{
+/// 为json结构实现,方便快速存取
+/// 专门服务 Config 表
+trait ConfigKey<ST>
+where
+    Self: serde::Serialize + 
+        serde::de::DeserializeOwned + 
+        diesel::Queryable<ST,Sqlite>+
+        'static{
+    fn get_key() -> &'static str;
+    fn get_json()->Self{
         use crate::sqlite::schema::config::dsl::*;
         let mut db=Db.get_db().unwrap();
-        let s:String = config
-            .filter(key.eq(self.get_key()))
+        config
+            .filter(key.eq(Self::get_key()))
             .select(json)
-            .first::<String>(&mut db).unwrap();
-        serde_json::from_str::<T>(&s).unwrap()
+            .first::<Self>(&mut db).unwrap()
     }
 }
+
+
