@@ -30,7 +30,7 @@
 //! blob        Binary
 //! integer     Integer
 //! boolean     Bool
-//! timestamp   Timestamp   todo:使用chrono::NaiveDateTime时有点问题,存储的字符串,要求是数字
+//! timestamp   Timestamp           //注意DataGrip会自动将 字符串格式转为数字,只能自己运行sql代码解决,所以尽量不要用DataGrip编辑时间
 //! ...
 //! text(json)  Text            自定义类型:要求实现FromSql和ToSql
 //! 

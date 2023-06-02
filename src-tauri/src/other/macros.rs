@@ -95,30 +95,23 @@ macro_rules! static_rjson {
     };
 }
 
+
 // diesel的教学文档真是 一言难尽... 
 // diesel的库文档真是 ... 不看源码我都不知道这些玩意咋用的
-/// 快捷定义 SQL中的Json类型
+/// 为一个服务Json的结构实现FromSql和ToSql
+/// 一下是结构体需要的:
+/// ```
+/// #[derive(Debug,serde::Serialize, serde::Deserialize,diesel::AsExpression)]
+/// #[diesel(sql_type = diesel::sql_types::Text)]
+/// ```
+/// 以下是枚举需要的: 
+/// ```
+/// #[derive(Debug,serde::Serialize, serde::Deserialize,diesel::AsExpression,diesel::FromSqlRow)]
+/// #[diesel(sql_type = diesel::sql_types::Text)]
+/// ```
 #[macro_export]
-macro_rules! struct_sql_json {
-    (
-        $( #[$meta:meta] )*
-        $vis:vis struct $name:ident {
-            $(
-                $( #[$field_meta:meta] )*
-                $field_vis:vis $field_name:ident : $field_ty:ty
-            ),*
-            $(,)? 
-        }
-    ) => {
-        #[derive(Debug,serde::Serialize, serde::Deserialize,diesel::AsExpression)]
-        #[diesel(sql_type = diesel::sql_types::Text)]
-        $( #[$meta] )*
-        $vis struct $name {
-            $(
-                $( #[$field_meta] )*
-                $field_vis $field_name : $field_ty
-            ),*
-        }
+macro_rules! from_to_sql_json {
+    ($name:ty) => {
         impl diesel::deserialize::FromSql<diesel::sql_types::Text,diesel::sqlite::Sqlite> for $name 
         where
             String: diesel::deserialize::FromSql<diesel::sql_types::Text, diesel::sqlite::Sqlite>{
@@ -135,6 +128,7 @@ macro_rules! struct_sql_json {
         }
     };
 }
+
 
 
 /// 孵化中的宏 ,禁止使用
