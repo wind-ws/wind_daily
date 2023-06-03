@@ -1,6 +1,8 @@
-use diesel::{*, sql_types::Text};
 
-use crate::{from_to_sql_json, sqlite::schema::config, other::user::user_db::Db};
+
+use diesel::Queryable;
+
+use crate::{from_to_sql_json};
 
 
 

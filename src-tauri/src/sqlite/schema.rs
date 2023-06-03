@@ -11,10 +11,12 @@ diesel::table! {
 diesel::table! {
     example (id) {
         id -> Integer,
-        name -> Text,
-        age -> Integer,
-        address -> Nullable<Text>,
-        salary -> Nullable<Float>,
+        text -> Text,
+        real -> Float,
+        blob -> Binary,
+        integer -> Integer,
+        boolean -> Bool,
+        timestamp -> Timestamp,
     }
 }
 
@@ -29,7 +31,7 @@ diesel::table! {
 diesel::table! {
     todo (id) {
         id -> Integer,
-        is -> Binary,
+        is -> Bool,
         title -> Text,
         create_time -> Text,
         done_time -> Nullable<Text>,

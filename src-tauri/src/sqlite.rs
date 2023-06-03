@@ -44,18 +44,36 @@
 
 use std::path::Path;
 
-use diesel::{Connection, SqliteConnection};
+use diesel::{Connection, SqliteConnection, r2d2::ConnectionManager};
+use r2d2::Pool;
+
+use self::migrations::run_migrations;
 
 
 
 pub mod table;
 pub mod migrations;
 pub mod schema;
+pub mod sql_type;
 
 
 /// 获取指定路径的db
 pub fn get_db(path:&Path)->SqliteConnection{
     let db: SqliteConnection = diesel::SqliteConnection::establish(path.to_str().unwrap()).unwrap();
     db
+}
+
+/// 从环境变量(.env)的地址 获取 数据库管理池
+/// 并且 执行 迁移
+pub fn get_db_pool_from_env()->Pool<ConnectionManager<SqliteConnection>>{
+    dotenvy::dotenv().ok();
+    let database_url = std::env::var("DATABASE_URL").unwrap();
+    let manager = ConnectionManager::<SqliteConnection>::new(database_url);
+    let pool: Pool<ConnectionManager<SqliteConnection>> = Pool::builder()
+        .build(manager)
+        .expect("Failed to create pool.");
+    let mut db = pool.get().unwrap();
+    run_migrations(&mut db);
+    pool
 }
 

@@ -3,7 +3,6 @@
 use diesel::{prelude::*, select, dsl::exists};
 use serde::{Deserialize, Serialize};
 
-use crate::{sqlite::schema::config, other::user::user_db::Db, from_to_sql_json};
 pub use crate::sqlite::schema::config::dsl::config as TableConfig;
 
 pub mod theme;
@@ -24,7 +23,7 @@ pub struct Config {
 trait ConfigJson
 where
     Self:serde::Serialize+serde::de::DeserializeOwned{
-
+    // type Table;//todo wait delete 感觉没必要,就一个config和state
     fn get_key()-> &'static str;
     /// 从Config表中获取对应key的json结构
     fn get_json(db:&mut r2d2::PooledConnection<diesel::r2d2::ConnectionManager<SqliteConnection>>)->Self{
@@ -80,31 +79,19 @@ where
 }
 
 
+
 #[cfg(test)]
 mod test{
-    use std::env;
 
-    use diesel::{r2d2::ConnectionManager, SqliteConnection};
-    use r2d2::Pool;
-
-    use crate::sqlite::migrations::run_migrations;
-
+    use crate::sqlite::{ get_db_pool_from_env};
     use super::{theme::ThemeJson, ConfigJson};
 
 
     /// 测试 trait ConfigJson 是否可以成功使用
     #[test]
-    fn test_configJson(){
-        dotenvy::dotenv().ok();
-        let database_url = env::var("DATABASE_URL").unwrap();
-        let manager = ConnectionManager::<SqliteConnection>::new(database_url);
-        
-        let pool = Pool::builder()
-            .build(manager)
-            .expect("Failed to create pool.");
-    
+    fn test_config_json(){
+        let pool = get_db_pool_from_env();
         let mut db = pool.get().unwrap();
-        run_migrations(&mut db);
 
         let theme = ThemeJson {
             theme: "light".to_string()
