@@ -33,8 +33,8 @@ diesel::table! {
         id -> Integer,
         is -> Bool,
         title -> Text,
-        create_time -> Text,
-        done_time -> Nullable<Text>,
+        create_time -> Timestamp,
+        done_time -> Nullable<Timestamp>,
     }
 }
 

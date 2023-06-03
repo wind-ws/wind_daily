@@ -37,13 +37,13 @@ use diesel_autoincrement_new_struct::NewInsertable;
 #[diesel(table_name = crate::sqlite::schema::example)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Example {
-    pub id   : i32,//离谱,自动增加的id,diesel却让它自定义输入...,解决方法居然是重新创建一个没有id的结构体
-    pub text : String,
-    pub real : f32,
-    pub blob : Vec<u8>,
-    pub integer : i32,
-    pub boolean : bool,
-    pub timestamp : DateTime,
+    pub id        : i32      ,//离谱,自动增加的id,diesel却让它自定义输入...,解决方法居然是重新创建一个没有id的结构体
+    pub text      : String   ,
+    pub real      : f32      ,
+    pub blob      : Vec<u8>  ,
+    pub integer   : i32      ,
+    pub boolean   : bool     ,
+    pub timestamp : DateTime ,
 }
 
 

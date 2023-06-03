@@ -1,7 +1,6 @@
-use std::str::FromStr;
 
 use chrono::{NaiveDateTime, NaiveDate};
-use diesel::{Queryable, FromSqlRow, sql_types::Timestamp, sqlite::{Sqlite, SqliteValue}, deserialize::{FromSql, self}, serialize::ToSql, backend::Backend};
+use diesel::{Queryable, sql_types::Timestamp, sqlite::{Sqlite}, deserialize::{FromSql, self}, serialize::ToSql, backend::Backend};
 use serde::{Serialize, Deserialize, de::Visitor};
 
 

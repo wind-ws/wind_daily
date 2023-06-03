@@ -39,8 +39,8 @@ pub fn get_db_file_path()->PathBuf{
 // todo Pool 配置还不是很懂
 // todo r2d2 文档: https://docs.diesel.rs/master/diesel/r2d2/index.html
 static mut DB:Option<Pool<ConnectionManager<SqliteConnection>>> = None;
-pub struct Db;
-impl Db {
+pub struct UserDb;
+impl UserDb {
     /// 若是None则初始化
     fn init(){
         unsafe{

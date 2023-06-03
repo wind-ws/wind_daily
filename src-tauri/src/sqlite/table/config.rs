@@ -15,9 +15,9 @@ pub mod theme;
 #[diesel(table_name = crate::sqlite::schema::config)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Config {
-    pub id: i32,
-    pub key: String,
-    pub json: String
+    pub id   : i32    ,
+    pub key  : String ,
+    pub json : String ,
 }
 
 

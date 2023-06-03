@@ -34,8 +34,8 @@ create table todo
     id          integer                 not null primary key autoincrement,
     "is"        boolean default false   not null,-- 是否完成todo
     title       text                    not null,-- 标题
-    create_time text                    not null,-- 创建时间
-    done_time   text                        -- 完成时间
+    create_time timestamp               not null,-- 创建时间
+    done_time   timestamp                        -- 完成时间
 );
 
 
