@@ -4,11 +4,14 @@ use diesel::{prelude::*, select, dsl::exists};
 use serde::{Deserialize, Serialize};
 
 pub use crate::sqlite::schema::config::dsl::config as TableConfig;
+use diesel_autoincrement_new_struct::apply;
+use diesel_autoincrement_new_struct::NewInsertable;
 
 pub mod theme;
 
 
-#[derive(Queryable, Selectable,Insertable,Deserialize, Serialize)]
+#[apply(NewInsertable!)]
+#[derive(Queryable, Selectable,Deserialize, Serialize)]
 #[diesel(table_name = crate::sqlite::schema::config)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Config {
@@ -42,8 +45,8 @@ where
     fn _insert_json(&self,db:&mut r2d2::PooledConnection<diesel::r2d2::ConnectionManager<SqliteConnection>>){
         use crate::sqlite::schema::config::dsl::*;
         diesel::insert_into(config)
-            .values(Config{
-                id:0,//自动增加,不用关心
+            .values(NewConfig{
+                // id:0,//自动增加,不用关心
                 key:Self::get_key().to_string(),
                 json:serde_json::to_string(self).unwrap()
             })

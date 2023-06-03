@@ -21,12 +21,23 @@ use serde::{Deserialize, Serialize};
 pub use crate::sqlite::schema::example::dsl::example as TableExample;//可恶, pub use as 居然不参与补全
 use crate::sqlite::sql_type::date_time::DateTime;
 
+use diesel_autoincrement_new_struct::apply;
+use diesel_autoincrement_new_struct::NewInsertable;
+
+
+
+
+#[derive(Insertable)]//当然,你依然可以使用Insertable,只不过需要在NewInsertable上面
+//它似乎会自动为NewExample实现 以下全部的#[...]
+//并且为newExample添加#[derive(Insertable)],所以这里需要移除#[derive(Insertable)]
+//而且以后所有的插入全部改用New...(NewExample),
+#[apply(NewInsertable!)]
 #[derive(Debug)]
-#[derive(Queryable, Selectable,Insertable,Deserialize, Serialize)]
+#[derive(Queryable,Selectable,Deserialize, Serialize)]
 #[diesel(table_name = crate::sqlite::schema::example)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Example {
-    pub id: i32,
+    pub id   : i32,//离谱,自动增加的id,diesel却让它自定义输入...,解决方法居然是重新创建一个没有id的结构体
     pub text : String,
     pub real : f32,
     pub blob : Vec<u8>,
@@ -46,15 +57,14 @@ mod test {
     use crate::sqlite::schema::example::dsl::*;
     use diesel::RunQueryDsl;
 
-    use super::Example;
-    fn get_example()->Example{
-        Example{
+    use super::{Example, NewExample};
+    fn get_example()->NewExample{
+        NewExample{
             timestamp:DateTime::new(
                 NaiveDate::from_ymd_opt(2016, 7, 8)
                 .unwrap().
                 and_hms_milli_opt(9, 10, 11,123)
                 .unwrap()),
-            id: 0,
             text: Default::default(),
             real: Default::default(),
             blob: Default::default(),

@@ -4,6 +4,9 @@ use tauri::{Builder, Wry};
 
 #[macro_use]
 extern crate lazy_static;
+#[macro_use]
+extern crate diesel_autoincrement_new_struct;
+
 pub mod twin;
 pub mod other;
 pub mod test;

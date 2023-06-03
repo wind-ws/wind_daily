@@ -30,6 +30,8 @@ r2d2 = "0.8.10"
 chrono = {version="0.4.25",feature=["rkyv"]} # 日期与时间
 # rkyv = "0.7.42" # 0拷贝 序列化和反序列化
 dotenvy = "0.15"
+diesel-autoincrement-new-struct = "0.1.1" # 用宏生成没有id的Insertable结构
+diesel-derive-newtype = "2.0.0" # todo 有时间仔细看看,似乎是自动实现一些 关于diesel的trail
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
