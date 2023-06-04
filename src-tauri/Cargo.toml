@@ -23,11 +23,11 @@ serde_json = "1.0" # json序列化和反序列化
 lazy_static = "1.4" # 惰性加载静态变量
 thiserror = "1.0" # 提供非常方便的宏去定义 Error
 # anyhow = "1.0" 
-# rusqlite = "0.29.0" # SQLite FFI
+rusqlite = { version = "0.29.0", features = ["bundled"] } # SQLite FFI,bundled:不依赖环境的SQLite,自己程序里绑定一个SQLite
 diesel =  { version = "2.1.0", features = ["sqlite","r2d2","serde_json","chrono"] } # SQLite 的ORM框架
 diesel_migrations = "2.1.0" # SQLite 迁移宏
 r2d2 = "0.8.10" 
-chrono = {version="0.4.25",feature=["rkyv"]} # 日期与时间
+chrono = {version="0.4.25" } # 日期与时间
 # rkyv = "0.7.42" # 0拷贝 序列化和反序列化
 dotenvy = "0.15"
 diesel-autoincrement-new-struct = "0.1.1" # 用宏生成没有id的Insertable结构
