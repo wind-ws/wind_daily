@@ -28,14 +28,22 @@ create table state
     json text    not null
 );
 
--- 暂时todo表, 未来十有八九会发生变化
+
+-- |todo的根表 
 create table todo
 (
     id          integer                 not null primary key autoincrement,
     "is"        boolean default false   not null,-- 是否完成todo
+    is_visible  boolean default true    not null,-- 是否可见
     title       text                    not null,-- 标题
+    e_todo_type text    default "None"  not null,-- |todo的类型
     create_time timestamp               not null,-- 创建时间
     done_time   timestamp                        -- 完成时间
 );
 
-
+create table father_todo
+(
+    id              integer not null primary key autoincrement,
+    todo_id         integer not null,-- 对应todo表
+    father_todo_id  integer not null,-- 对应todo表
+);

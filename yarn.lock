@@ -343,6 +343,11 @@
     "@tauri-apps/cli-win32-ia32-msvc" "2.0.0-alpha.8"
     "@tauri-apps/cli-win32-x64-msvc" "2.0.0-alpha.8"
 
+"@types/animejs@^3.1.7":
+  version "3.1.7"
+  resolved "https://registry.yarnpkg.com/@types/animejs/-/animejs-3.1.7.tgz#4d9b23fff04b52e755119625a6087e2bc024527a"
+  integrity sha512-kFSyjM+fLo3oE9noWEtUvF82ttN8fTrKohiEMIrSzEzEjnsCmtO0rBCUQBlSPEb2w8vfN+v4/Zo0tK21Bgmq4g==
+
 "@types/node@^18.7.10":
   version "18.16.12"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.16.12.tgz#f11e19055c5b3daeb79dc6eb7ccdd3d036313034"
