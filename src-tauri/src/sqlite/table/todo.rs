@@ -6,6 +6,9 @@ use diesel_autoincrement_new_struct::NewInsertable;
 
 use crate::sqlite::sql_type::date_time::DateTime;
 
+use self::priority::Priority;
+
+pub mod priority;
 
 #[apply(NewInsertable!)]
 #[derive(Debug,Queryable,Selectable,Deserialize, Serialize)]
@@ -16,15 +19,12 @@ pub struct Todo {
     pub is          : bool             ,
     pub is_visible  : bool             ,
     pub title       : String           ,
-    pub e_todo_type : String /*ETodoType*/  ,
+    pub priority    : Priority         ,
+    pub father_id   : Option<i32>      ,
+    pub remind_time : Option<DateTime> ,
     pub create_time : DateTime         ,
     pub done_time   : Option<DateTime> ,
 }
 
 
-#[derive(Debug)]
-enum ETodoType {
-    None
-}
-//todo 为 ETodotype实现 FromSql和ToSql
 

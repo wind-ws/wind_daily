@@ -3,6 +3,10 @@
     import {ref} from "vue";
     import type {AnyTouchEvent} from 'any-touch';
     import anime from 'animejs/lib/anime.es.js';
+    /// 双击编辑 title
+    /// 左滑出现 隐藏按钮
+    /// 右滑出现 删除按钮 和 全面数据编辑(可以编辑除了id以外的全部数据,包括创建时间)
+    /// 一般不建议删除,需要保存数据做 数据表 ,建议选择 隐藏
 
     const props = defineProps<{
         id: number,
