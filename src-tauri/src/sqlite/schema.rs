@@ -21,6 +21,14 @@ diesel::table! {
 }
 
 diesel::table! {
+    father_todo (id) {
+        id -> Integer,
+        todo_id -> Integer,
+        father_todo_id -> Integer,
+    }
+}
+
+diesel::table! {
     state (id) {
         id -> Integer,
         key -> Text,
@@ -32,7 +40,9 @@ diesel::table! {
     todo (id) {
         id -> Integer,
         is -> Bool,
+        is_visible -> Bool,
         title -> Text,
+        e_todo_type -> Text,
         create_time -> Timestamp,
         done_time -> Nullable<Timestamp>,
     }
@@ -41,6 +51,7 @@ diesel::table! {
 diesel::allow_tables_to_appear_in_same_query!(
     config,
     example,
+    father_todo,
     state,
     todo,
 );

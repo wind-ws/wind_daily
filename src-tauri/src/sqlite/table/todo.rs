@@ -14,8 +14,17 @@ use crate::sqlite::sql_type::date_time::DateTime;
 pub struct Todo {
     pub id          : i32              ,
     pub is          : bool             ,
+    pub is_visible  : bool             ,
     pub title       : String           ,
+    pub e_todo_type : String /*ETodoType*/  ,
     pub create_time : DateTime         ,
     pub done_time   : Option<DateTime> ,
 }
+
+
+#[derive(Debug)]
+enum ETodoType {
+    None
+}
+//todo 为 ETodotype实现 FromSql和ToSql
 

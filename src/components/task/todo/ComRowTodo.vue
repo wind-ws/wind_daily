@@ -4,6 +4,11 @@
     import type {AnyTouchEvent} from 'any-touch';
     import anime from 'animejs/lib/anime.es.js';
 
+    const props = defineProps<{
+        id: number,
+        is:boolean,
+        title:string
+    }>();
 
     const todo_block = ref<HTMLElement | null>(null)
     const delete_block = ref<HTMLElement | null>(null)
@@ -112,7 +117,7 @@
       </div>
       <div class = "inline-block text-xl h-full w-[90%] "
            style = "word-break: break-all;">
-        {{"123"}}
+        {{title}}
       </div>
     </div>
     <div ref = "delete_block"

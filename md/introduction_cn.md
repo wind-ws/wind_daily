@@ -14,7 +14,7 @@
 * 可能使用 | Hammer.js (手势触摸库)
 * anime.js (动画库)
 * popmotion (动画库)
-
+* vuedraggable@next (拖拽库)
 
 
 ## 后端
