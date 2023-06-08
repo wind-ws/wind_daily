@@ -5,7 +5,7 @@ use crate::from_to_sql_json;
 
 #[derive(Debug,serde::Serialize, serde::Deserialize,diesel::AsExpression,diesel::FromSqlRow)]
 #[diesel(sql_type = diesel::sql_types::Text)]
-pub enum Priority {//todo 实现FromSql和ToSql
+pub enum Priority {
     Indifferent, //无所谓啦级(灰色),做不做都可以或者说想做就做
     Ordinary,    //一般般啦级(绿色),有资源(时间)在做
     Normal,      //正常级(蓝色),需要完成,

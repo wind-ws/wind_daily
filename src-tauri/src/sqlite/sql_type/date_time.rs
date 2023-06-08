@@ -113,5 +113,10 @@ impl DateTime {
     pub fn new_sec(date:(i32,u32,u32),day:(u32,u32,u32))->Self{
         Self::new_milli(date,(day.0,day.1,day.2,0))
     }
+
+    pub fn now()->Self{
+        Self::new(chrono::Local::now()
+            .naive_local())
+    }
     
 }

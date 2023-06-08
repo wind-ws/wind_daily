@@ -37,13 +37,13 @@ create table todo (
     title       text                    not null,-- 标题
     priority    text                    
         check(priority in (
-                'Indifferent', --无所谓啦级(灰色),做不做都可以或者说想做就做
-                'Ordinary',    --一般般啦级(绿色),有资源(时间)在做
-                'Normal',      --正常级(蓝色),需要完成,
+                '"Indifferent"', --无所谓啦级(灰色),做不做都可以或者说想做就做
+                '"Ordinary"',    --一般般啦级(绿色),有资源(时间)在做
+                '"Normal"',      --正常级(蓝色),需要完成,
                     --Normal优先Indifferent & Ordinary,即建议完成所有Normal后在进行优先级更低的
                     --Normal被优先Urgent & Haunted ,即建议 所有被优先 级 完成后在进行Normal级
-                'Urgent',   --紧急级(黄色),放下爱情和理想,赶快去完成这个todo
-                'Haunted'   --要命级(红色),当它出现后,会派出一只鬼去追杀你,直到你完成todo
+                '"Urgent"',   --紧急级(黄色),放下爱情和理想,赶快去完成这个todo
+                '"Haunted"'   --要命级(红色),当它出现后,会派出一只鬼去追杀你,直到你完成todo
             )
         )
         default 'Normal'                not null,-- 优先级

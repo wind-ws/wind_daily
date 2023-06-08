@@ -18,13 +18,10 @@
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
-pub use crate::sqlite::schema::example::dsl::example as TableExample;//可恶, pub use as 居然不参与补全
 use crate::sqlite::sql_type::date_time::DateTime;
 
 use diesel_autoincrement_new_struct::apply;
 use diesel_autoincrement_new_struct::NewInsertable;
-
-
 
 
 #[derive(Insertable)]//当然,你依然可以使用Insertable,只不过需要在NewInsertable上面

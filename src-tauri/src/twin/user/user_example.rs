@@ -29,14 +29,14 @@ pub fn user_example_command(mark:CommandMark,data:Value)->Res{
 mod insert_value {
     use diesel::RunQueryDsl;
 
-    use crate::{sqlite::{table::example::{Example,TableExample}}, other::user::user_db::UserDb};
+    use crate::{sqlite::{table::{example::{Example}, self}}, other::user::user_db::UserDb};
 
     use super::*;
 
     pub(super) fn insert_value(table:Example)->Res{
         let mut db = UserDb.get_db().unwrap();
-        diesel::insert_into(TableExample)
-            .values(table)
+        diesel::insert_into(table::TableExample)
+            .values(&table)
             .execute(&mut db)
             .unwrap();
         Ok(Value::Null)

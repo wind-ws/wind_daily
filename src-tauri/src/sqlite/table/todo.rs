@@ -10,6 +10,7 @@ use self::priority::Priority;
 
 pub mod priority;
 
+
 #[apply(NewInsertable!)]
 #[derive(Debug,Queryable,Selectable,Deserialize, Serialize)]
 #[diesel(table_name = crate::sqlite::schema::todo)]

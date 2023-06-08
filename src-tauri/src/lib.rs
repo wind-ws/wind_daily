@@ -30,6 +30,8 @@ fn install_command(ta: tauri::Builder<tauri::Wry>) -> tauri::Builder<tauri::Wry>
         crate::twin::init::rust_init,
         crate::twin::app::app_config::app_config_command,
         crate::twin::user::user_example::user_example_command,
+        crate::twin::user::user_todo::user_todo_command,
+
     ])
 }
 

@@ -22,6 +22,7 @@ use diesel::r2d2::{ ConnectionManager, Pool, PooledConnection};
 
 use crate::other::app::app_config::AppConfigRJson;
 use crate::other::path::user_path::UserPath;
+use crate::sqlite::migrations::run_migrations;
 
 
 pub static DB_NAME: &'static str = "user.sqlite3";
@@ -53,10 +54,19 @@ impl UserDb {
     pub fn refresh(){
         unsafe {
             //? 似乎不需要 关闭之前的连接池,并且等待之前的连接池工作完毕
-            let manager = ConnectionManager::<SqliteConnection>::new(get_db_file_path().to_str().unwrap());
+            let manager = if cfg!(test) {
+                dotenvy::dotenv().ok();
+                let database_url = std::env::var("DATABASE_URL").unwrap();
+                let manager = ConnectionManager::<SqliteConnection>::new(database_url);
+                manager
+            } else {
+                ConnectionManager::<SqliteConnection>::new(get_db_file_path().to_str().unwrap())
+            };
             let pool = Pool::builder()
                 .build(manager)
                 .expect("Failed to create pool.");
+            let mut db = pool.get().unwrap();
+            run_migrations(&mut db);//执行一次迁移
             DB = Some(pool);
         }
     }

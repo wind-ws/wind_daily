@@ -55,6 +55,7 @@ pub mod table;
 pub mod migrations;
 pub mod schema;
 pub mod sql_type;
+pub mod traits;
 
 
 /// 获取指定路径的db
@@ -65,7 +66,7 @@ pub fn get_db(path:&Path)->SqliteConnection{
 
 /// 从环境变量(.env)的地址 获取 数据库管理池
 /// 并且 执行 迁移
-pub fn get_db_pool_from_env()->Pool<ConnectionManager<SqliteConnection>>{
+pub fn get_db_pool_from_env()->Pool<ConnectionManager<SqliteConnection>>{//todo wait delete: 现在测试可以直接用 UserDb 了
     dotenvy::dotenv().ok();
     let database_url = std::env::var("DATABASE_URL").unwrap();
     let manager = ConnectionManager::<SqliteConnection>::new(database_url);
