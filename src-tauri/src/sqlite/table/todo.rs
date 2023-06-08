@@ -12,7 +12,7 @@ pub mod priority;
 
 
 #[apply(NewInsertable!)]
-#[derive(Debug,Queryable,Selectable,Deserialize, Serialize)]
+#[derive(Debug,Queryable,AsChangeset,Selectable,Deserialize, Serialize)]
 #[diesel(table_name = crate::sqlite::schema::todo)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Todo {

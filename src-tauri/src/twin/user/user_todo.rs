@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, from_value};
-use diesel::prelude::*;
 
 
 /// 只注册一个命令, 通过 symbol 来触发不同的业务
@@ -10,6 +9,7 @@ pub enum CommandMark {
     GetAllTodo,
     GetTodoById,
     GetTodoByIsVisible,
+    UpdataTodo,
 }
 /// 所有业务统一用一个 Error处理
 #[derive(Debug, thiserror::Error,Serialize,Deserialize)]
@@ -23,10 +23,11 @@ type Res = Result<Value,CommandError>;
 pub fn user_todo_command(mark:CommandMark,data:Value)->Res{
     println!("命令触发:{mark:?}-->\n{data:#?}");
     match mark {
-        CommandMark::AddTodo    => add_todo::add_todo(from_value(data).unwrap()),
-        CommandMark::GetAllTodo => get_todo::get_all_todo(),
-        CommandMark::GetTodoById => get_todo::get_todo_by_id(from_value(data).unwrap()),
+        CommandMark::AddTodo            => add_todo::add_todo(from_value(data).unwrap()),
+        CommandMark::GetAllTodo         => get_todo::get_all_todo(),
+        CommandMark::GetTodoById        => get_todo::get_todo_by_id(from_value(data).unwrap()),
         CommandMark::GetTodoByIsVisible => get_todo::get_todo_by_is_visible(from_value(data).unwrap()),
+        CommandMark::UpdataTodo         => updata_todo::updata_todo(from_value(data).unwrap())
     }
 }
 
@@ -151,4 +152,46 @@ mod get_todo {
 
 
 
+mod updata_todo {
+    use diesel::*;
+    use crate::{sqlite::table::{todo::{Todo}, self}, other::user::user_db::UserDb};
+    use super::*;
+    
+    /// 更新 todo 表
+    /// 要保证id的存在
+    pub(super) fn updata_todo(json:Todo)->Res{
+        diesel::update(table::TableTodo
+                .filter(
+                    table::ColTodo::id.eq(json.id.clone()))
+                )
+            .set(json)
+            .execute(&mut UserDb.get_db().unwrap())
+            .unwrap();
+        Ok(Value::Null)
+    }
 
+    #[cfg(test)]
+    mod test {
+
+        use crate::sqlite::{table::todo::priority::Priority, sql_type::date_time::DateTime};
+
+        use super::*;
+
+        #[test]
+        fn test_update_todo() {
+            let json = Todo {
+                id: 1,
+                is: false,
+                is_visible: true,
+                title: "Oh~".to_string(),
+                priority: Priority::Urgent,
+                father_id: None,
+                remind_time: None,
+                create_time: DateTime::now(),
+                done_time: None,
+            };
+            updata_todo(json).unwrap();
+        }
+        
+    }
+}
