@@ -6,6 +6,7 @@ export enum Command {
     rust_init="rust_init",
     app_config_command="app_config_command",
     user_example_command="user_example_command",
+    user_todo_command="user_todo_command",
 }
 
 /// [mark,data],写的更舒服

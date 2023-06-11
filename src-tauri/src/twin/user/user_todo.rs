@@ -96,7 +96,7 @@ mod get_todo {
 
     /// 获得所有的todo
     pub(super) fn get_all_todo()->Res{
-        let vec = table::TableTodo
+        let vec: Vec<table::todo::Todo> = table::TableTodo
             .load::<table::todo::Todo>(&mut UserDb.get_db().unwrap())
             .unwrap();
         Ok(serde_json::to_value(vec).unwrap())
@@ -105,7 +105,7 @@ mod get_todo {
     /// 根据id获取todo
     /// 传入的id必须保证它的存在,若不存在,软件会直接崩溃 (需要这样)
     pub(super) fn get_todo_by_id(id:i32)->Res{
-        let json=table::TableTodo
+        let json:table::todo::Todo=table::TableTodo
             .filter(table::ColTodo::id.eq(id))
             .first::<table::todo::Todo>(&mut UserDb.get_db().unwrap())
             .unwrap();
@@ -115,7 +115,7 @@ mod get_todo {
     /// true  则返回 可见的全部todo
     /// false 则返回 不可见的全部todo
     pub(super) fn get_todo_by_is_visible(is_visible:bool)->Res{
-        let vec = table::TableTodo
+        let vec:Vec<table::todo::Todo> = table::TableTodo
             .filter(table::ColTodo::is_visible.eq(is_visible))
             .load::<table::todo::Todo>(&mut UserDb.get_db().unwrap())
             .unwrap();

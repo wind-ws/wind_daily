@@ -1,4 +1,5 @@
 import {Command, invoke} from "../../invoke";
+import {DateTime} from "../../type/datetime";
 
 export enum CommandMark {
     AddTodo             = "AddTodo",
@@ -9,6 +10,19 @@ export enum CommandMark {
 }
 export {AddTodo};
 
+
+export type Todo = {
+    id          :number,
+    is          :boolean,
+    is_visible  :boolean,
+    title       :string,
+    priority    :Priority,
+    father_id   ?:number,
+    remind_time ?:DateTime,
+    create_time :DateTime,
+    done_time   ?:DateTime,
+}
+
 export enum Priority {
     Indifferent = "Indifferent",
     Ordinary    = "Ordinary",
@@ -18,15 +32,16 @@ export enum Priority {
 }
 
 
+
 namespace AddTodo{
     export type AddTodo = {
         title:string
         priority:Priority
         father_id?:number
-        remind_time?:string
+        remind_time?:DateTime
     }
     export function add_todo(data:AddTodo) {
-        return invoke<AddTodo,CommandMark>(Command.user_example_command,[
+        return invoke<AddTodo,CommandMark>(Command.user_todo_command,[
             CommandMark.AddTodo,
             data
         ])
@@ -34,8 +49,34 @@ namespace AddTodo{
 }
 
 namespace GetTodo{
-
+    
+    export function get_all_todo():Promise<Todo[]>{
+        return invoke<null,CommandMark,Todo[]>(Command.user_todo_command,[
+            CommandMark.GetAllTodo,
+            null
+        ])
+    }
+    export function get_todo_by_id(id:number):Promise<Todo>{
+        return invoke<number,CommandMark,Todo>(Command.user_todo_command,[
+            CommandMark.GetTodoById,
+            id
+        ])
+    }
+    
+    export function get_todo_by_is_visible(is_visible:boolean):Promise<Todo[]>{
+        return invoke<boolean,CommandMark,Todo[]>(Command.user_todo_command,[
+            CommandMark.GetTodoByIsVisible,
+            is_visible
+        ])
+    }
+    
 }
 namespace UpdataTodo{
-
+    
+    export function updata_todo(json:Todo){
+        return invoke<Todo,CommandMark>(Command.user_todo_command,[
+            CommandMark.GetTodoByIsVisible,
+            json
+        ])
+    }
 }
