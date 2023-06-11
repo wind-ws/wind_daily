@@ -8,7 +8,7 @@ export enum CommandMark {
     GetTodoByIsVisible  = "GetTodoByIsVisible",
     UpdataTodo          = "UpdataTodo",
 }
-export {AddTodo};
+export default {AddTodo,GetTodo,UpdataTodo};
 
 
 export type Todo = {
@@ -71,11 +71,14 @@ namespace GetTodo{
     }
     
 }
+
 namespace UpdataTodo{
     
+    
+    /// 更新会直接根据json中的id进行更新,必须保证id的存在
     export function updata_todo(json:Todo){
         return invoke<Todo,CommandMark>(Command.user_todo_command,[
-            CommandMark.GetTodoByIsVisible,
+            CommandMark.UpdataTodo,
             json
         ])
     }

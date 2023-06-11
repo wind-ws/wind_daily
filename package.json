@@ -26,7 +26,7 @@
     "vant": "^4.3.2",
     "vue": "^3.2.45",
     "vue-router": "4",
-    "vuedraggable": "^4.1.0"
+    "vue3-smooth-dnd": "^0.0.5"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.0.0-alpha.8",

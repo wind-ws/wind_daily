@@ -3,7 +3,7 @@ import {Command, invoke} from "../../invoke";
 export enum CommandMark {
     InsertValue="InsertValue",
 }
-export {InsertValue};
+export default {InsertValue};
 
 namespace InsertValue {
     export type Example = {
