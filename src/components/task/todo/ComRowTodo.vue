@@ -159,33 +159,4 @@
     </SwipeCell>
   </div>
 
-  <!--  <div class = "w-full h-full inline-block relative">-->
-  <!--    <div ref = "todo_block"-->
-  <!--         v-touch-->
-  <!--         class = "inline-block-->
-  <!--                  h-full w-full-->
-  <!--                  rounded-xl px-3 py-4-->
-  <!--                  dark:bg-zinc-900-->
-  <!--                  "-->
-  <!--         @panend = "right_fold.panend"-->
-  <!--         @panleft = "right_fold.panleft"-->
-  <!--         @panright = "right_fold.panright">-->
-  <!--      <div class = "inline-block pr-2 w-[10%]">-->
-  <!--        <Icon.HeroOutline.CheckCircleIcon-->
-  <!--                class = "h-6 text-teal-700"></Icon.HeroOutline.CheckCircleIcon>-->
-  <!--      </div>-->
-  <!--      <div class = "inline-block text-xl h-full w-[90%] "-->
-  <!--           style = "word-break: break-all;">-->
-  <!--        {{title}}-->
-  <!--      </div>-->
-  <!--    </div>-->
-  <!--    <div ref = "delete_block"-->
-  <!--         class = "inline-block absolute bottom-0 right-0-->
-  <!--                h-full w-0 rounded-xl bg-red-800"-->
-  <!--         style = "display: flex;align-items: center;">-->
-  <!--      <Icon.HeroOutline.XCircleIcon-->
-  <!--              class = "w-[75%] text-black" style = "margin: 0 auto"></Icon.HeroOutline.XCircleIcon>-->
-  <!--    </div>-->
-  <!--  </div>-->
-
 </template>

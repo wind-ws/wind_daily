@@ -1,19 +1,11 @@
 <script lang = "ts" setup>
     import ComRowTodo from "../../../../components/task/todo/ComRowTodo.vue";
-    import {ref} from "vue"
+    import {ref,Ref,onMounted} from "vue"
     import { SwipeCell ,Button,Cell } from 'vant';
-    import { Container, Draggable } from "vue3-smooth-dnd";
+    import Sortable from 'sortablejs';
 
     let drag = ref(false);
-
-    let myArray = ref([
-        {
-            name:"abc",
-        },
-        {
-            name:"123",
-        }
-    ])
+    let myArray = ref(generateItems(20,(i)=>{return {id:i,name:"todo "+i}}))
     function applyDrag(arr:any, dragResult:any) {
         const { removedIndex, addedIndex, payload } = dragResult;
         console.error("aa")
@@ -41,29 +33,26 @@
         return result;
     };
 
-    let items = ref(generateItems(15, (i:number) => ({ id: i, data: "Draggable " + i })));
-    function onDrop(dropResult:any) {
-        console.log(dropResult)
-        items.value = applyDrag(items.value, dropResult);
-    };
+    const sortable_list = ref< HTMLElement | null>(null)
+
+    onMounted(() => {
+        let sort = Sortable.create(sortable_list.value as HTMLElement,{
+            delay:500,
+            animation: 150,
+        });
+    })
 </script>
 
 <template>
-<!--  123-->
-  <div class = "w-[90%] mx-auto ">
-<!--    <ComRowTodo></ComRowTodo>-->
+
+  <div class = "w-[90%] h-40 ">
   </div>
 
-<!-- 只要发生拖动后,就无法滚动了... -->
-  <div class = "w-[90%] mx-auto " style="height: 100vh;overflow-y: auto">
-    <Container orientation="vertical" @drop="onDrop" lock-axis="y" :drag-begin-delay="800">
-      <Draggable v-for="(item, i) in items" :key="item.id">
-        <div class="mb-4">
-          <ComRowTodo :title="item.data"></ComRowTodo>
-        </div>
-      </Draggable>
-    </Container>
-  </div>
 
+  <div ref="sortable_list" id="abc" class = "w-[90%] mx-auto " >
+    <div v-for="v in myArray" :key="v.id"  class="mb-4">
+      <ComRowTodo :title="v.name" ></ComRowTodo>
+    </div>
+  </div>
 
 </template>

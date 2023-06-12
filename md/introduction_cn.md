@@ -14,7 +14,7 @@
 * 可能使用 | Hammer.js (手势触摸库)
 * anime.js (动画库)
 * popmotion (动画库)
-* vue3-smooth-dnd (拖拽库)
+* sortablejs (拖拽库)
 
 
 ## 后端
@@ -24,6 +24,7 @@
 # 追求
 1. 极致的UI交互和美化
 2. 细化每一处
+3. 高度自定义
 
 
 # 计划
