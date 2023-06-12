@@ -2,28 +2,27 @@
     import ComRowTodo from "../../../../components/task/todo/ComRowTodo.vue";
     import {ref,Ref,onMounted} from "vue"
     import { SwipeCell ,Button,Cell } from 'vant';
+    import {Priority, Todo} from "../../../../ts_src/twin/user/user_todo";
     import Sortable from 'sortablejs';
 
     let drag = ref(false);
-    let myArray = ref(generateItems(20,(i)=>{return {id:i,name:"todo "+i}}))
-    function applyDrag(arr:any, dragResult:any) {
-        const { removedIndex, addedIndex, payload } = dragResult;
-        console.error("aa")
-        if (removedIndex === null && addedIndex === null) return arr;
-
-        const result = [...arr];
-        let itemToAdd = payload;
-
-        if (removedIndex !== null) {
-            itemToAdd = result.splice(removedIndex, 1)[0];
-        }
-
-        if (addedIndex !== null) {
-            result.splice(addedIndex, 0, itemToAdd);
-        }
-
-        return result;
-    };
+    let myArray = ref(generateItems(30,(i)=>({id:i,name:{
+            id          :i,
+            is          :i%2==0,
+            is_visible  :true,
+            title       :"todo "+i,
+            priority    :(()=>{
+                switch (i%5) {
+                    case 0: return Priority.Indifferent;
+                    case 1: return Priority.Ordinary;
+                    case 2: return Priority.Normal;
+                    case 3: return Priority.Urgent;
+                    case 4: return Priority.Haunted;
+                }
+            })(),
+            create_time :"..."
+        } as Todo}))
+    )
 
     function generateItems(count:number, creator:(i:number)=>any){
         const result:any[] = [];
@@ -37,8 +36,9 @@
 
     onMounted(() => {
         let sort = Sortable.create(sortable_list.value as HTMLElement,{
-            delay:500,
+            delay:300,
             animation: 150,
+            filter: ".ignore-elements-ComRowTodo"
         });
     })
 </script>
@@ -51,8 +51,13 @@
 
   <div ref="sortable_list" id="abc" class = "w-[90%] mx-auto " >
     <div v-for="v in myArray" :key="v.id"  class="mb-4">
-      <ComRowTodo :title="v.name" ></ComRowTodo>
+      <ComRowTodo :table="v.name" ></ComRowTodo>
     </div>
   </div>
 
 </template>
+<style scoped>
+  .sortable-chosen{
+      opacity: 0.5;
+  }
+</style>

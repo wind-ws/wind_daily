@@ -31,6 +31,28 @@ export enum Priority {
     Haunted     = "Haunted",
 }
 
+/// 返回未完成状态的 颜色
+export function get_priority_color_undone(self:Priority):string{//要求返回 #000000 格式,而非class名
+    switch (self) {//todo 降低色彩亮度,变为暗色
+        case Priority.Indifferent   : return "#52525b";//灰色 //zinc-600
+        case Priority.Ordinary      : return "#059669";//绿色 //emerald-600
+        case Priority.Normal        : return "#0284c7";//蓝色 //sky-600
+        case Priority.Urgent        : return "#d97706";//黄色 //amber-600
+        case Priority.Haunted       : return "#b91c1c";//红色 //red-700
+    }
+}
+
+/// 返回完成状态的 颜色
+export function get_priority_color_done(self:Priority):string{//要求返回 #000000 格式,而非class名
+    switch (self) {//todo 降低色彩亮度,变为暗色
+        case Priority.Indifferent   : return "#52525b";//灰色 //zinc-600
+        case Priority.Ordinary      : return "#059669";//绿色 //emerald-600
+        case Priority.Normal        : return "#0284c7";//蓝色 //sky-600
+        case Priority.Urgent        : return "#d97706";//黄色 //amber-600
+        case Priority.Haunted       : return "#b91c1c";//红色 //red-700
+    }
+}
+
 
 
 namespace AddTodo{
