@@ -39,31 +39,31 @@ export const videoDirPath = await appDir.videoDir();
 
 export function init_rust_path() {
     const app_all_base_path = {
-        app_cache_dir_path      : appCacheDirPath,
-        app_config_dir_path     : appConfigDirPath,
-        app_data_dir_path       : appDataDirPath,
-        app_local_data_dir_path : appLocalDataDirPath,
-        app_log_dir_path        : appLogDirPath,
-        audio_dir_path          : audioDirPath,
-        cache_dir_path          : cacheDirPath,
-        config_dir_path         : configDirPath,
-        data_dir_path           : dataDirPath,
+        app_cache_dir_path: appCacheDirPath,
+        app_config_dir_path: appConfigDirPath,
+        app_data_dir_path: appDataDirPath,
+        app_local_data_dir_path: appLocalDataDirPath,
+        app_log_dir_path: appLogDirPath,
+        audio_dir_path: audioDirPath,
+        cache_dir_path: cacheDirPath,
+        config_dir_path: configDirPath,
+        data_dir_path: dataDirPath,
         // desktop_path            : desktopPath,
-        document_dir_path       : documentDirPath,
-        download_dir_path       : downloadDirPath,
+        document_dir_path: documentDirPath,
+        download_dir_path: downloadDirPath,
         // executable_dir_path     : executableDirPath,
         // font_dir_path           : fontDirPath,
         // home_dir_path           : homeDirPath,
-        local_data_dir_path     : localDataDirPath,
-        picture_dir_path        : pictureDirPath,
-        public_dir_path         : publicDirPath,
-        resource_dir_path       : resourceDirPath,
+        local_data_dir_path: localDataDirPath,
+        picture_dir_path: pictureDirPath,
+        public_dir_path: publicDirPath,
+        resource_dir_path: resourceDirPath,
         // runtime_dir_path        : runtimeDirPath,
         // template_dir_path       : templateDirPath,
-        video_dir_path          : videoDirPath,
+        video_dir_path: videoDirPath,
     }
-   
-    invoke('init_rust_path', {json:app_all_base_path})
+
+    invoke('init_rust_path', { json: app_all_base_path })
         .then((message) => console.log(message))
         .catch((error) => console.error(error))
 }

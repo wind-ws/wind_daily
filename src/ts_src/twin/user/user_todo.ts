@@ -55,51 +55,51 @@ export function get_priority_color_done(self:Priority):string{//要求返回 #00
 
 
 
-namespace AddTodo{
+namespace AddTodo {
     export type AddTodo = {
-        title:string
-        priority:Priority
-        father_id?:number
-        remind_time?:DateTime
+        title: string
+        priority: Priority
+        father_id?: number
+        remind_time?: DateTime
     }
-    export function add_todo(data:AddTodo) {
-        return invoke<AddTodo,CommandMark>(Command.user_todo_command,[
+    export function add_todo(data: AddTodo) {
+        return invoke<AddTodo, CommandMark>(Command.user_todo_command, [
             CommandMark.AddTodo,
             data
         ])
     }
 }
 
-namespace GetTodo{
-    
-    export function get_all_todo():Promise<Todo[]>{
-        return invoke<null,CommandMark,Todo[]>(Command.user_todo_command,[
+namespace GetTodo {
+
+    export function get_all_todo(): Promise<Todo[]> {
+        return invoke<null, CommandMark, Todo[]>(Command.user_todo_command, [
             CommandMark.GetAllTodo,
             null
         ])
     }
-    export function get_todo_by_id(id:number):Promise<Todo>{
-        return invoke<number,CommandMark,Todo>(Command.user_todo_command,[
+    export function get_todo_by_id(id: number): Promise<Todo> {
+        return invoke<number, CommandMark, Todo>(Command.user_todo_command, [
             CommandMark.GetTodoById,
             id
         ])
     }
-    
-    export function get_todo_by_is_visible(is_visible:boolean):Promise<Todo[]>{
-        return invoke<boolean,CommandMark,Todo[]>(Command.user_todo_command,[
+
+    export function get_todo_by_is_visible(is_visible: boolean): Promise<Todo[]> {
+        return invoke<boolean, CommandMark, Todo[]>(Command.user_todo_command, [
             CommandMark.GetTodoByIsVisible,
             is_visible
         ])
     }
-    
+
 }
 
-namespace UpdataTodo{
-    
-    
+namespace UpdataTodo {
+
+
     /// 更新会直接根据json中的id进行更新,必须保证id的存在
-    export function updata_todo(json:Todo){
-        return invoke<Todo,CommandMark>(Command.user_todo_command,[
+    export function updata_todo(json: Todo) {
+        return invoke<Todo, CommandMark>(Command.user_todo_command, [
             CommandMark.UpdataTodo,
             json
         ])

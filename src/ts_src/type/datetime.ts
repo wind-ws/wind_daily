@@ -3,11 +3,11 @@
 import dayjs from 'dayjs';//dayjs中文文档:https://dayjs.gitee.io/zh-CN/
 
 
-const format : string = "YYYY-MM-DD HH:mm:ss.SSS";
+const format: string = "YYYY-MM-DD HH:mm:ss.SSS";
 
 export type DateTime = string;
 
 
-export function now() : DateTime {
+export function now(): DateTime {
     return dayjs().format(format)
 }

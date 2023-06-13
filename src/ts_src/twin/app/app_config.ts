@@ -1,37 +1,37 @@
-import {Command, invoke} from "../../invoke";
+import { Command, invoke } from "../../invoke";
 
 export enum CommandMark {
-    CreateNewUser="CreateNewUser",
-    GetActiveUser="GetActiveUser"
+    CreateNewUser = "CreateNewUser",
+    GetActiveUser = "GetActiveUser"
 }
 
-export {CreateNewUser,ActiveUser};
+export { CreateNewUser, ActiveUser };
 
 
-namespace CreateNewUser{
-    type CreateNewUserData={
-        name:string,
-        path?:string
+namespace CreateNewUser {
+    type CreateNewUserData = {
+        name: string,
+        path?: string
     };
-    
-    export function create_new_user(name:string,path?:string){
-        return invoke<CreateNewUserData,CommandMark>(Command.app_config_command,[
+
+    export function create_new_user(name: string, path?: string) {
+        return invoke<CreateNewUserData, CommandMark>(Command.app_config_command, [
             CommandMark.CreateNewUser,
-            {name,path}
+            { name, path }
         ])
     }
 }
 
 
-namespace ActiveUser{
+namespace ActiveUser {
     type ActiveUser = {
-        name:string,
-        path?:string
+        name: string,
+        path?: string
     }
-    export function get_active_user():Promise<ActiveUser>{
-        return invoke<null,CommandMark,ActiveUser>(Command.app_config_command,[
+    export function get_active_user(): Promise<ActiveUser> {
+        return invoke<null, CommandMark, ActiveUser>(Command.app_config_command, [
             CommandMark.GetActiveUser,
             null
-         ])
+        ])
     }
 }
