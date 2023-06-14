@@ -7,6 +7,7 @@ export enum CommandMark {
     GetTodoById         = "GetTodoById",
     GetTodoByIsVisible  = "GetTodoByIsVisible",
     UpdataTodo          = "UpdataTodo",
+    RemoveTodoById      = "RemoveTodoById",
 }
 export default {AddTodo,GetTodo,UpdataTodo};
 
@@ -102,6 +103,16 @@ namespace UpdataTodo {
         return invoke<Todo, CommandMark>(Command.user_todo_command, [
             CommandMark.UpdataTodo,
             json
+        ])
+    }
+}
+
+namespace RemoveTodo {
+
+    export function remove_todo_by_id(id:number){
+        return invoke<number, CommandMark>(Command.user_todo_command, [
+            CommandMark.RemoveTodoById,
+            id
         ])
     }
 }

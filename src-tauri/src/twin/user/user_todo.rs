@@ -10,6 +10,7 @@ pub enum CommandMark {
     GetTodoById,
     GetTodoByIsVisible,
     UpdataTodo,
+    RemoveTodoById,
 }
 /// 所有业务统一用一个 Error处理
 #[derive(Debug, thiserror::Error,Serialize,Deserialize)]
@@ -27,7 +28,8 @@ pub fn user_todo_command(mark:CommandMark,data:Value)->Res{
         CommandMark::GetAllTodo         => get_todo::get_all_todo(),
         CommandMark::GetTodoById        => get_todo::get_todo_by_id(from_value(data).unwrap()),
         CommandMark::GetTodoByIsVisible => get_todo::get_todo_by_is_visible(from_value(data).unwrap()),
-        CommandMark::UpdataTodo         => updata_todo::updata_todo(from_value(data).unwrap())
+        CommandMark::UpdataTodo         => updata_todo::updata_todo(from_value(data).unwrap()),
+        CommandMark::RemoveTodoById     => remove_todo::remove_todo_by_id(from_value(data).unwrap()),
     }
 }
 
@@ -150,8 +152,6 @@ mod get_todo {
     }
 }
 
-
-
 mod updata_todo {
     use diesel::*;
     use crate::{sqlite::table::{todo::{Todo}, self}, other::user::user_db::UserDb};
@@ -194,4 +194,33 @@ mod updata_todo {
         }
         
     }
+}
+
+mod remove_todo{
+    use diesel::{QueryDsl,RunQueryDsl, ExpressionMethods};
+
+    use crate::{sqlite::table, other::user::user_db::UserDb};
+
+    use super::*;
+
+    /// 根据id删除todo , 非必要优先选择隐藏
+    pub(super) fn remove_todo_by_id(id:i32) -> Res{
+        diesel::delete(table::TableTodo
+                .filter(table::ColTodo::id.eq(id))
+            )
+            .execute(&mut UserDb.get_db().unwrap())
+            .unwrap();
+        Ok(Value::Null)
+    }
+
+    #[cfg(test)]
+    mod test{
+        use super::*;
+
+        #[test]
+        fn test_remove_todo(){
+            remove_todo_by_id(1).unwrap();
+        }
+    }
+
 }

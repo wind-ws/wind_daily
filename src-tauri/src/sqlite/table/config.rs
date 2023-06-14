@@ -17,7 +17,7 @@ pub mod theme;
 pub struct Config {
     pub id   : i32    ,
     pub key  : String ,
-    pub json : String ,
+    pub json : String ,//todo 好像还要做一个 json结构变化后迁移的 抽象
 }
 
 
@@ -26,7 +26,6 @@ pub struct Config {
 trait ConfigJson
 where
     Self:serde::Serialize+serde::de::DeserializeOwned{
-    // type Table;//todo wait delete 感觉没必要,就一个config和state
     fn get_key()-> &'static str;
     /// 从Config表中获取对应key的json结构
     fn get_json(db:&mut r2d2::PooledConnection<diesel::r2d2::ConnectionManager<SqliteConnection>>)->Self{

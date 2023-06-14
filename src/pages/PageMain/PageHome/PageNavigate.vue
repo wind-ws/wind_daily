@@ -47,16 +47,19 @@
                class="h-6 w-6"></Icon.HeroOutline.Cog8ToothIcon>
          </template>
       </TabbarItem>
-      <!-- 小部件显示页 -->
-      <!-- 数据图看板页 -->
-      <!-- 设置页-->
    </Tabbar>
 </template>
 
 <script lang="ts">
    import { RouteRecordRaw } from "vue-router";
-   import ShowSetting from "./PageNavigate/ShowSetting.vue";
+   import ShowSetting from "./PageNavigate/PageSetting/ShowSetting.vue";
    import ShowNameless_1 from "./PageNavigate/ShowNameless_1.vue";
+   import PageTodo, { PageTodoChildren } from "./PageNavigate/PageTodo.vue";
+   import PageShow, { PageShowChildren } from "./PageNavigate/PageShow.vue";
+   import PageChart, { PageChartChildren } from "./PageNavigate/PageChart.vue";
+   import PageSetting, {
+      PageSettingChildren,
+   } from "./PageNavigate/PageSetting.vue";
 
    export const PageNavigateChildren: RouteRecordRaw[] = [
       {
@@ -65,11 +68,23 @@
       },
       {
          path: "todo", // todo页
-         component: ShowNameless_1,
+         component: PageTodo,
+         children: PageTodoChildren,
+      },
+      {
+         path: "show", // 小部件显示页
+         component: PageShow,
+         children: PageShowChildren,
+      },
+      {
+         path: "chart", // 数据图看板页
+         component: PageChart,
+         children: PageChartChildren,
       },
       {
          path: "setting", //设置页
-         component: ShowSetting,
+         component: PageSetting,
+         children: PageSettingChildren,
       },
    ];
    export default {};

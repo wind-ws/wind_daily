@@ -2,7 +2,7 @@
    import { ref } from "vue";
    import { SwipeCell, Cell, Button, Row, Col } from "vant";
    import Icon from "../../../ts_src/icon";
-   import {
+   import user_todo, {
       get_priority_color_done,
       get_priority_color_undone,
       Todo,
@@ -15,6 +15,7 @@
    const props = defineProps<{
       table: Todo;
    }>();
+   const id = props.table.id;
 
    function click_switch_is() {
       //切换is状态,也表示 完成或未完成 的todo
@@ -26,9 +27,12 @@
       } else {
          //undone
       }
+      
    }
-   function click_conceal() {
-      //隐藏当前id的todo
+   function click_conceal() {//隐藏当前id的todo
+      props.table.is_visible = !props.table.is_visible;
+      user_todo.UpdataTodo.updata_todo(props.table)
+      
    }
    function click_change() {
       //修改当前id的todo

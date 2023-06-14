@@ -4,6 +4,7 @@ pub mod config;
 pub mod state;
 pub mod todo;
 
+pub use diesel::{QueryDsl,RunQueryDsl, ExpressionMethods};
 
 pub use crate::sqlite::schema::example::table as TableExample;
 pub use crate::sqlite::schema::example::dsl as ColExample;
