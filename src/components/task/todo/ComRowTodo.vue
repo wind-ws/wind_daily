@@ -13,14 +13,16 @@
    /// 一般不建议删除,需要保存数据做 数据表 ,建议选择 隐藏
 
    const props = defineProps<{
-      table: Todo;
-   }>();
-   const id = props.table.id;
+      row: Todo,
+      // todo_sifting_machine:null,
+   }>(); 
+
 
    function click_switch_is() {
       //切换is状态,也表示 完成或未完成 的todo
-      props.table.is = !props.table.is;
-      let is = props.table.is;
+      props.row.is = !props.row.is;
+      user_todo.UpdataTodo.updata_todo(props.row)
+      let is = props.row.is;
 
       if (is) {
          //done
@@ -30,16 +32,24 @@
       
    }
    function click_conceal() {//隐藏当前id的todo
-      props.table.is_visible = !props.table.is_visible;
-      user_todo.UpdataTodo.updata_todo(props.table)
+      props.row.is_visible = false;
+      // user_todo.UpdataTodo.updata_todo(props.row)
       
    }
-   function click_change() {
-      //修改当前id的todo
+   function click_appear() {//显现当前id的todo
+      props.row.is_visible = true;
+      // user_todo.UpdataTodo.updata_todo(props.row)
+
    }
-   function click_remove() {
-      //删除当前id的todo
-      //todo 要求弹框确认是否删除,并提示 "建议点击隐藏,以便存储数据生成数据图表"
+   function click_change() {//修改当前id的todo
+      //唤起 修改面板
+   }
+   function click_remove() {//删除当前id的todo
+      // 唤起 是否确认删除...
+
+      // user_todo.RemoveTodo.remove_todo_by_id(props.row.id);
+      
+      // todo 要求弹框确认是否删除,并提示 "建议点击隐藏,以便存储数据生成数据图表"
    }
 
    const original_height = window.innerHeight; //窗口原高度
@@ -78,7 +88,7 @@
 <template>
    <div
       class="w-full h-full"
-      :style="{ opacity: table.is ? 0.6 : 1 }">
+      :style="{ opacity: row.is ? 0.6 : 1 }">
       <SwipeCell
          :right-width="80"
          :left-width="140">
@@ -132,16 +142,16 @@
                      class="self-center w-full h-full border-teal-700"
                      @click="click_switch_is">
                      <Icon.HeroSolid.StopIcon
-                        v-if="table.is"
+                        v-if="row.is"
                         class="inline-block h-7"
                         :style="{
-                           color: get_priority_color_done(table.priority),
+                           color: get_priority_color_done(row.priority),
                         }" />
                      <Icon.HeroOutline.StopIcon
                         v-else
                         class="inline-block h-7"
                         :style="{
-                           color: get_priority_color_undone(table.priority),
+                           color: get_priority_color_undone(row.priority),
                         }" />
                   </div>
                </Col>
@@ -150,7 +160,7 @@
                      ref="title_block"
                      class="unselectable"
                      style="word-break: break-all; outline: none">
-                     {{ props.table.title }}
+                     {{ props.row.title }}
                   </div>
                </Col>
             </Row>
@@ -168,9 +178,13 @@
                      style="height: max-content">
                      <div
                         class="w-12 h-12 mx-auto flex border-2 border-zinc-700 rounded-full active:bg-zinc-700"
-                        @click="click_conceal">
+                        @click="_=>row.is_visible?click_conceal():click_appear()">
                         <Icon.HeroOutline.EyeSlashIcon
+                           v-if="row.is_visible"
                            class="text-zinc-500 h-6 mx-auto self-center" />
+                        <Icon.HeroOutline.EyeIcon
+                           v-else
+                           class="text-zinc-400 h-6 mx-auto self-center" />
                      </div>
                   </Col>
                </Row>

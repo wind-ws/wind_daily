@@ -9,7 +9,12 @@ export enum CommandMark {
     UpdataTodo          = "UpdataTodo",
     RemoveTodoById      = "RemoveTodoById",
 }
-export default {AddTodo,GetTodo,UpdataTodo};
+export default {
+    AddTodo,
+    GetTodo,
+    UpdataTodo,
+    RemoveTodo,
+};
 
 
 export type Todo = {

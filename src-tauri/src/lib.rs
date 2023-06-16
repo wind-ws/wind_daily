@@ -1,4 +1,6 @@
 #![allow(dead_code)]//太吵了,全局用用
+// #![feature(associated_type_defaults)]//算了,还是用稳定版吧
+
 use tauri::{Builder, Wry};
 
 

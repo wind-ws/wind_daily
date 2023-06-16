@@ -16,3 +16,4 @@
 
 pub mod version_migration;
 pub mod file_name;
+pub mod migration;
