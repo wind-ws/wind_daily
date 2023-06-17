@@ -1,4 +1,7 @@
-
+//! 术语
+//! 存储版本 : 表示用户本机上实际的结构版本
+//! 结构版本 : 表示结构本身的版本
+//! 最新版本 : 表示 需要将 存储版本 变为的版本,也是 被包装类型的结构版本 (包装类型<被包装类型>)
 
 pub mod file_json;
 pub mod sql_json;
@@ -7,22 +10,24 @@ pub mod sql_json;
 // 分流: 把结构A分为 B和C
 // 合流: 把结构B和C 合为 A
 
+
 /// 版本标识 的类型
 /// 暂时未确定是否选择u32,可能选择str(算了,以免比大小出现问题)
-type VersionMarkType = u32;
+pub type VersionMarkType = u32;
 
 
 
 
 /// 包装类型 实现
 /// mig的流程是 先 获取存储版本,在进行 更新或回溯
-trait Mig<D>
+pub trait Mig<D>
 where
     Self: MigVersion,
     D:  Sized+
-        MigVersionData+
+        MigData+
         MigUp+
-        MigDown,{
+        MigDown+
+        MigGetSelf,{
     
     /// 执行迁移,并获取最新版本数据
     fn mig()->D{
@@ -41,7 +46,7 @@ where
 
 /// 包装类型 实现 , 也可以 被包装类型实现, 但包装类型必须实现
 /// 最新版本由 被包装类型决定
-trait MigVersion {
+pub trait MigVersion {
     /// 获取本地(存储)版本
     fn now_version()->VersionMarkType;
     
@@ -50,7 +55,7 @@ trait MigVersion {
 
 /// 被包装类型实现
 /// 定义 结构的[版本,老版本,新版本,数据]
-trait MigVersionData{
+pub trait MigData{
     /// 当前结构体的实际数据
     type Data;
     
@@ -68,17 +73,16 @@ trait MigVersionData{
 }
 
 /// 被包装类型实现
-trait MigGetSelf {
+pub trait MigGetSelf {
     /// 不基于 老版本或新版本 去创建一个自己
     /// 往往是直接从 目标数据 转为 自己 , 比如 从 文件数据(.json文件) 转为 json(Self)
     fn get_self()->Self;
 }
 
-// todo 合成 MigUp和MigDown ,因为他们总是在一起
 
 /// 被包装类型实现
 /// 更新版本
-trait MigUp : MigVersionData + MigGetSelf + Sized {
+pub trait MigUp : MigData + MigGetSelf + Sized {
     fn up(now_version:VersionMarkType)->Self{
         if now_version == Self::MY_VERSION {
             Self::get_self()
@@ -93,7 +97,7 @@ trait MigUp : MigVersionData + MigGetSelf + Sized {
 
 /// 被包装类型实现
 /// 回溯版本
-trait MigDown: MigVersionData+ MigGetSelf + Sized  {
+pub trait MigDown: MigData+ MigGetSelf + Sized  {
     fn down(now_version:VersionMarkType)->Self{
         if now_version == Self::MY_VERSION {
             Self::get_self()
@@ -111,7 +115,7 @@ trait MigDown: MigVersionData+ MigGetSelf + Sized  {
 // trait MigData:Sized+MigVersionData+MigUp+MigDown{}
 
 /// 若没有 Next版本或Old版本 ,那么可以用()代替
-impl MigVersionData for (){
+impl MigData for (){
     type Data=();
 
     type Old=();

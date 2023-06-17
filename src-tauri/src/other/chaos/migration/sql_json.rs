@@ -4,6 +4,6 @@
 use super::*;
 
 
-struct SqlJson<D:MigVersionData>(D);
+struct SqlJson<D:MigData>(D);
 
 
