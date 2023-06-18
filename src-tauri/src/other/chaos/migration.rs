@@ -7,8 +7,9 @@ pub mod file_json;
 pub mod sql_json;
 
 // 结构 分流 和 合流
-// 分流: 把结构A分为 B和C
+// 分流: 把结构A分为 B和C  
 // 合流: 把结构B和C 合为 A
+// 太花了,不玩这个, 需要在想吧
 
 
 /// 版本标识 的类型
@@ -56,7 +57,7 @@ pub trait MigVersion {
 /// 被包装类型实现
 /// 定义 结构的[版本,老版本,新版本,数据]
 pub trait MigData{
-    /// 当前结构体的实际数据
+    /// 当前结构的实际数据
     type Data;
     
     /// 上一个版本
