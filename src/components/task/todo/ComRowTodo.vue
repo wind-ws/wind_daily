@@ -2,11 +2,14 @@
    import { ref } from "vue";
    import { SwipeCell, Cell, Button, Row, Col } from "vant";
    import Icon from "../../../ts_src/icon";
-   import user_todo, {
+   import {
       get_priority_color_done,
       get_priority_color_undone,
+      RemoveTodo,
       Todo,
+UpdataTodo,
    } from "../../../ts_src/twin/user/user_todo";
+   import { showConfirmDialog } from 'vant';
    /// 双击编辑 title
    /// 左滑出现 隐藏按钮
    /// 右滑出现 删除按钮 和 全面数据编辑(可以编辑除了id以外的全部数据,包括创建时间)
@@ -16,12 +19,14 @@
       row: Todo,
       // todo_sifting_machine:null,
    }>(); 
-
+   // todo 把全部的事件全部向外散发, 内部不处理事件
+   // : 0.1后处理
+   const emit = defineEmits(['remove_byid'])
 
    function click_switch_is() {
       //切换is状态,也表示 完成或未完成 的todo
       props.row.is = !props.row.is;
-      user_todo.UpdataTodo.updata_todo(props.row)
+      UpdataTodo.updata_todo(props.row)
       let is = props.row.is;
 
       if (is) {
@@ -33,23 +38,30 @@
    }
    function click_conceal() {//隐藏当前id的todo
       props.row.is_visible = false;
-      // user_todo.UpdataTodo.updata_todo(props.row)
+      UpdataTodo.updata_todo(props.row)
       
    }
    function click_appear() {//显现当前id的todo
       props.row.is_visible = true;
-      // user_todo.UpdataTodo.updata_todo(props.row)
+      UpdataTodo.updata_todo(props.row)
 
    }
    function click_change() {//修改当前id的todo
       //唤起 修改面板
    }
    function click_remove() {//删除当前id的todo
-      // 唤起 是否确认删除...
 
-      // user_todo.RemoveTodo.remove_todo_by_id(props.row.id);
-      
-      // todo 要求弹框确认是否删除,并提示 "建议点击隐藏,以便存储数据生成数据图表"
+      showConfirmDialog({
+         title:"是否确认删除",
+         message: `<p style="color:#52525b">建议点击隐藏,以便存储数据生成数据图表</p>`,
+         allowHtml:true,
+         overlay:true,
+         closeOnClickOverlay:true,
+      }).then(v=>{
+         RemoveTodo.remove_todo_by_id(props.row.id);
+
+         emit("remove_byid",props.row.id);
+      });
    }
 
    const original_height = window.innerHeight; //窗口原高度
@@ -78,6 +90,8 @@
          } else {
             //收起键盘
             console.log("oh~yes~");
+            props.row.title=title_block.value.innerText;
+            UpdataTodo.updata_todo(props.row)//存储数据
             dblclick_edit_title_repeat.value = false; //关闭禁止双击
             title_block.value.contentEditable = "false"; //设为不可编辑
             window.removeEventListener("resize", e_listener_edit);
@@ -87,7 +101,7 @@
 </script>
 <template>
    <div
-      class="w-full h-full"
+      class="w-full h-full "
       :style="{ opacity: row.is ? 0.6 : 1 }">
       <SwipeCell
          :right-width="80"
@@ -159,7 +173,7 @@
                   <div
                      ref="title_block"
                      class="unselectable"
-                     style="word-break: break-all; outline: none">
+                     style="word-break: break-all; outline: none;white-space: pre-wrap;">
                      {{ props.row.title }}
                   </div>
                </Col>

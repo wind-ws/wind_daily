@@ -54,8 +54,13 @@ impl UserDb {
     pub fn refresh(){
         unsafe {
             //? 似乎不需要 关闭之前的连接池,并且等待之前的连接池工作完毕
-            let manager = if cfg!(test) {
-                dotenvy::dotenv().ok();
+            dotenvy::dotenv().ok();
+            let manager = 
+                if cfg!(test) {
+                println!("\n 正在连接 Test数据库 \n");
+                // 在实体机上如何观察 数据库的数据?
+                // 使用 Android Studio 去找到目录即可,提前是实体机已经连接电脑
+                // 这十分不方便,目前还没有其他更好的方法
                 let database_url = std::env::var("DATABASE_URL").unwrap();
                 let manager = ConnectionManager::<SqliteConnection>::new(database_url);
                 manager

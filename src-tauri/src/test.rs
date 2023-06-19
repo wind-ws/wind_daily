@@ -12,3 +12,13 @@
 //! 
 //! ## Description  : 
 //! 用于学习和尝试和测试的模块
+
+pub mod env;
+
+#[test]
+fn text_f(){
+    dotenvy::dotenv().ok();
+
+    println!("{}",std::env::var("TEST_MODE").unwrap().eq("true"));
+
+}

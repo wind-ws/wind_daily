@@ -9,7 +9,7 @@ export enum CommandMark {
     UpdataTodo          = "UpdataTodo",
     RemoveTodoById      = "RemoveTodoById",
 }
-export default {
+export {
     AddTodo,
     GetTodo,
     UpdataTodo,
@@ -35,6 +35,15 @@ export enum Priority {
     Normal      = "Normal",
     Urgent      = "Urgent",
     Haunted     = "Haunted",
+}
+export function priority_arr():Priority[]{
+    return [
+        Priority.Indifferent,
+        Priority.Ordinary,
+        Priority.Normal,
+        Priority.Urgent,
+        Priority.Haunted,
+    ];
 }
 
 /// 返回未完成状态的 颜色

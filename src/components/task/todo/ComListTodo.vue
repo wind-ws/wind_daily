@@ -1,38 +1,59 @@
 <script setup lang="ts">
-   import { onMounted, ref } from "vue";
+   import { onMounted, ref,Ref } from "vue";
    import ComRowTodo from "./ComRowTodo.vue";
-   import user_todo, { Todo } from "../../../ts_src/twin/user/user_todo";
-import Sortable from "sortablejs";
+   import { AddTodo, GetTodo, Todo } from "../../../ts_src/twin/user/user_todo";
+   import Sortable from "sortablejs";
 
    // 需要传入 筛选机
    // 会根据 筛选机 来加载状态和 todo列表
+   const props = defineProps<{
+      e:{
+         // 添加器 添加todo时 我们使用这个函数去增加我们的列表
+         // 需要重新定义函数规则,去覆盖,传入的函数必然没有任何功能
+         // 父组件触发子组件,奇怪的用法,不知道行不行
+         add_todo:(todo:AddTodo.AddTodo)=>void,
+      },
+
+   }>(); 
+   // const emit = defineEmits(['remove_byid'])
 
    const sortable_list = ref<HTMLElement | null>(null);
+
+   props.e.add_todo = (todo:AddTodo.AddTodo)=>{
+      // todo 没有id啊~~~
+      // todo 修改Rust, 要求返回id
+      // todo_list.value.unshift(todo);
+   };
+
    onMounted(() => {
+      GetTodo.get_all_todo()
+         .then((v) => {
+            todo_list.value = v;
+         }).catch((e) => {});
+
       let sort = Sortable.create(sortable_list.value as HTMLElement, {
          delay: 300,
          animation: 150,
          filter: ".ignore-elements-ComRowTodo",
       });
    });
+   
 
    // ! 以下是临时的 TodoList 状态,暂时先发布0.1后写筛选机,状态由筛选机保持
 
-   const todo_list =ref<Todo[]>([]);
-   user_todo.GetTodo.get_all_todo()
-      .then(v=>{
-         todo_list.value=v;
-      }).catch(e=>{});
-
-
+   const todo_list = ref<Todo[]>([]);
+   function remove_byid(index:number) {
+      todo_list.value.splice(index,1);
+   }
 </script>
 
 <template>
-   <div ref="sortable_list"
-      v-for="v in todo_list"
-      :key="v.id"
-      class="mb-4">
-      <ComRowTodo :row="v"></ComRowTodo>
+
+   <div ref="sortable_list" >
+      <div v-for="v,k in todo_list"
+         :key="v.id" class="mb-4">
+         <ComRowTodo :row="v" @remove_byid="remove_byid(k)"></ComRowTodo>
+      </div>
    </div>
 </template>
 <style scoped>

@@ -27,6 +27,14 @@ diesel::table! {
 }
 
 diesel::table! {
+    mig_json_version (id) {
+        id -> Integer,
+        key -> Text,
+        version -> Integer,
+    }
+}
+
+diesel::table! {
     plan (id) {
         id -> Integer,
     }
@@ -64,6 +72,7 @@ diesel::allow_tables_to_appear_in_same_query!(
     config,
     example,
     habit,
+    mig_json_version,
     plan,
     state,
     task,

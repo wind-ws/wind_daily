@@ -10,7 +10,7 @@ use crate::other::chaos::file_name::FilePath;
 use super::*;
 
 
-
+/// 文件结构 迁移的包装类型, 服务Json
 #[derive(Serialize,Deserialize)]
 #[derive(Debug,Default,Clone)]
 pub struct FileJson<D>

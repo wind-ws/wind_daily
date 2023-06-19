@@ -11,6 +11,13 @@ create table example (
     timestamp   timestamp not null
 );
 
+-- json结构 版本表
+create table mig_json_version (
+    id      integer     not null primary key autoincrement,
+    key     text        not null unique ,
+    version integer     not null
+);
+
 -- 用户的 配置表
 create table config (
     id   integer not null primary key autoincrement,
