@@ -11,26 +11,18 @@
          // 添加器 添加todo时 我们使用这个函数去增加我们的列表
          // 需要重新定义函数规则,去覆盖,传入的函数必然没有任何功能
          // 父组件触发子组件,奇怪的用法,不知道行不行
-         add_todo:(todo:AddTodo.AddTodo)=>void,
+         refresh_todo_list:(todo:AddTodo.AddTodo)=>void,
       },
 
    }>(); 
-   // const emit = defineEmits(['remove_byid'])
 
    const sortable_list = ref<HTMLElement | null>(null);
 
-   props.e.add_todo = (todo:AddTodo.AddTodo)=>{
-      // todo 没有id啊~~~
-      // todo 修改Rust, 要求返回id
-      // todo_list.value.unshift(todo);
+   props.e.refresh_todo_list = (todo:AddTodo.AddTodo)=>{
+      refresh_todo_list();
    };
 
    onMounted(() => {
-      GetTodo.get_all_todo()
-         .then((v) => {
-            todo_list.value = v;
-         }).catch((e) => {});
-
       let sort = Sortable.create(sortable_list.value as HTMLElement, {
          delay: 300,
          animation: 150,
@@ -45,6 +37,14 @@
    function remove_byid(index:number) {
       todo_list.value.splice(index,1);
    }
+   function refresh_todo_list(){
+      GetTodo.get_all_todo()
+         .then((v) => {
+            v.reverse();
+            todo_list.value = v;
+         }).catch((e) => {});
+   }
+   refresh_todo_list();
 </script>
 
 <template>

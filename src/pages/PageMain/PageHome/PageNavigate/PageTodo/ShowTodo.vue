@@ -12,13 +12,15 @@
    import Sortable from "sortablejs";
    import ComListTodo from "../../../../../components/task/todo/ComListTodo.vue";
 
+   // todo 状态持久化 可不可以 直接用 Web自带的那个玩意 ,数据库操作太麻烦了
+   
    const title = ref("");
    const priority = ref<Priority>(Priority.Normal);
    const priority_select = ref(false);
    // 用于 父组件 触发 子组件
-   const e_add_todo = ref((_:AddTodo.AddTodo)=>{});
+   const e_refresh_todo_list = ref((_:AddTodo.AddTodo)=>{});
    const e=ref({
-      add_todo:e_add_todo
+      refresh_todo_list:e_refresh_todo_list
    })
 
    function add_todo() {
@@ -28,14 +30,14 @@
          priority: priority.value,
       };
       AddTodo.add_todo(todo);
-      e.value.add_todo(todo);
+      e.value.refresh_todo_list(todo);
 
       title.value = "";
    }
 </script>
 
 <template>
-   <div class="w-[90%] h-40 mx-auto py-10">
+   <div class="w-[90%] h-full mx-auto py-10">
       <Field
          v-model="title"
          class="rounded-xl"
